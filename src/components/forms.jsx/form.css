@@ -1,0 +1,38 @@
+.form-component{
+    border: 1px solid gray;
+    border-radius: 0.5rem;
+    background-color: rgb(251, 252, 253);
+    width: 100%;
+    padding: 2rem 1.5rem;
+border: none;
+    margin-bottom: 2rem;
+    box-shadow: -1px -1px 13px;
+    margin: 4rem auto ;
+    justify-content: center;
+    align-content: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+form>input {
+    padding: 0.5rem;
+    width: 80%;
+    border: 1px solid rgb(19, 14, 14);
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+}
+
+form>input:focus {
+    background-color: aliceblue;
+    border: 2px solid rgb(194, 162, 162);
+    outline: none;
+}
+
+form>label {
+    font-weight: 550;
+    color: rgb(46, 38, 38);
+}

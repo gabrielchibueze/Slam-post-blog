@@ -1,0 +1,40 @@
+
+.input {
+    margin: 0.25rem 0;
+    width: 93%;
+  }
+  
+  .input > label {
+    display: block;
+    /* text-transform: uppercase; */
+    margin-bottom: 0.6rem;
+    font-size: large;
+  }
+  input{
+    height: 1.5rem;
+  }
+  .input > input,
+  .input > textarea {
+    display: block;
+    font: inherit;
+    padding: 0.3rem 0.5rem;
+    width: 100%;
+    border-radius: 0.4rem;
+    border: 1px solid #705b5b;
+  }
+  
+  .input .touched.invalid {
+      border-color: red;
+      background: #ffc2c2;
+  }
+  
+  .input input:focus,
+  .input > textarea:focus {
+    outline: none;
+    border-color: #3b0062;
+    background-color: #f6f1f8;
+  }
+  
+  .input__error-message {
+    margin: 0px;
+  }

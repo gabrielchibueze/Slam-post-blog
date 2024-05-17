@@ -1,0 +1,11 @@
+/* eslint-disable react/prop-types */
+import "./loader.css"
+export default function Loader (){
+    return <div className="loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <p>Loading...</p>
+    </div>
+ }

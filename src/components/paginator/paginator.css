@@ -1,0 +1,22 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.paginator-btn > p , .paginator-btn{
+    background-color:  blueviolet;
+    color: rgb(236, 226, 226);
+    padding: 0.2rem 0.8rem;
+    border-radius: 0.5rem;
+    margin: 0px;
+    cursor: pointer;
+}
+
+.paginator-btn:active{
+    background-color: rgb(75, 11, 139);
+}
+
+.paginator-btn{
+    margin: 2rem;
+}

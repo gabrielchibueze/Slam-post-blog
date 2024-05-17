@@ -1,0 +1,39 @@
+.slam-feed-section{
+    width: 100%;
+    border: 1px solid gray;
+    padding: 0rem 0rem 0rem 0rem;
+    box-sizing: 1rem 2rem 4rem;
+    box-shadow: 2px 5px 8px rgb(59, 56, 54);
+    border-radius: 0.5rem;
+}
+
+.slam-feed-section > section, .slam-feed-section >p {
+    margin: 1rem;
+}
+
+.posted-by {
+    font-weight: bold;
+}
+.post-title {
+    margin: 0px;
+}
+
+.post-links>  p > span {
+    margin: 0.3rem;
+}
+
+.button-section{
+    display: flex;
+    justify-content: right;
+    gap: 1rem;
+}
+
+.post-links, .post-links:hover{
+    text-decoration: none;
+    text-transform: none;
+    color: black;
+}
+
+.slam-feed-section > .top-section {
+    margin-left: 1rem;
+}

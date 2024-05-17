@@ -1,0 +1,21 @@
+.new-post__image-preview {
+    height: 120px;
+    width: 150px;
+}
+
+.feed-edit-popup {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    width: 60%;
+}
+
+@media(max-width: 800px){
+    .feed-edit-popup{
+        width: 80%;
+    }
+}
+.creat-post-reminder__authentication {
+    color: red;
+    margin: 0 auto;
+}

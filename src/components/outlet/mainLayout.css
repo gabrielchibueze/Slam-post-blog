@@ -1,0 +1,145 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+.main-layout-outlet {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    margin: 0px;
+    padding: 0rem;
+
+}
+
+.pages-layout {
+    min-height: fit-content;
+    padding: 3rem 2rem;
+}
+
+
+header {
+    display: flex;
+    justify-content: space-between;
+    height: 100px;
+    background-color: rgb(158, 22, 163);
+    width: 100%;
+    align-items: flex-start;
+    color: whitesmoke;
+    align-items: center;
+    padding: 0rem;
+}
+
+.header__nagivation-link {
+    display: flex;
+    gap: 1.3rem;
+    margin-right: 2rem;
+    align-items: center;
+}
+
+.header__nagivation-link>a {
+    color: azure;
+    font: bolder;
+    font-size: 1.5rem;
+}
+.isAut-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem
+}
+header>h1 {
+    user-select: none;
+    cursor: pointer;
+}
+
+header>a:hover,
+header>a {
+    user-select: none;
+    cursor: pointer;
+    color: whitesmoke;
+    text-decoration: none;
+    margin-left: 2rem;
+
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    color: rgb(186, 163, 190);
+    text-decoration: none;
+}
+
+
+
+
+.content-footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+}
+
+footer {
+    display: flex;
+    /* flex-wrap: wrap; */
+    gap: 5rem;
+    width: 100%;
+    justify-content: space-around;
+    padding: 2rem 0rem;
+    background-color: rgb(158, 22, 163);
+
+}
+
+@media(max-width: 500px) {
+    footer {
+        gap: 0rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+@media(max-width: 600px) {
+    footer {
+        gap: 2rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+footer>div {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+footer>div>section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+footer>div>h3 {
+    margin: 0px;
+    padding: 0px;
+}
+
+footer>div>section>a {
+    text-decoration: none;
+    color: antiquewhite;
+}
+
+/* Show Post feed/update Section */
+.showpop-up-div {
+    margin: 0 auto;
+    width: 80%;
+}
+
+@media(min-width: 800px) {
+    .showpop-up-div {
+        width: 62%;
+    }
+}
