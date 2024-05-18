@@ -4,7 +4,7 @@ import "./button.css"
 export default function MultiButtonComponent({ props }) {
     let filteredButttonComponent;
     if(props.buttonProperties.length > 1){
-        filteredButttonComponent = props.buttonProperties.filter(button => button.buttonTitle === button.buttonTitle.trim().length > 1)
+        filteredButttonComponent = props.buttonProperties.filter(button => button.buttonTitle.trim().length > 1)
     } else {
         filteredButttonComponent = props.buttonProperties
     }

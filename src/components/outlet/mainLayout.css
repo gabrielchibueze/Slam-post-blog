@@ -29,19 +29,55 @@ header {
     color: whitesmoke;
     align-items: center;
     padding: 0rem;
+    z-index: 2;
 }
 
-.header__nagivation-link {
+.desktop-view__mode{
     display: flex;
     gap: 1.3rem;
     margin-right: 2rem;
     align-items: center;
 }
+.toggle-icon {
+    margin-right: 2rem;
+}
 
-.header__nagivation-link>a {
+.toggle-icon > h1 {
+    font-size: 3rem;
+    cursor: pointer;
+}
+
+.desktop-view__mode>a, .mobile-view__mode>a, .isAut-section>a {
     color: azure;
     font: bolder;
     font-size: 1.5rem;
+}
+
+.mobile-view__mode {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: rgb(158, 22, 163);
+    width:330px;
+    height: 100vh;
+    top: 100px;
+    right: 0;
+    z-index: -1;
+    position: absolute;
+    padding: 2rem;
+    animation: menuShow 0.3s ease-in-out;
+    
+}
+
+@keyframes menuShow {
+    from {
+        top: 150px;
+        opacity: 0;
+    }
+    to {
+        bottom: 0px;
+        opacity: 1;
+    }
 }
 .isAut-section {
     display: flex;

@@ -49,7 +49,7 @@ function App() {
       localStorage.removeItem("slamUserToken");
       localStorage.removeItem("slamUsername");
       localStorage.removeItem("slamUserId")
-    }, 36000000)
+    }, 18000000)
   }
 
   return (<div className='root-app'>
