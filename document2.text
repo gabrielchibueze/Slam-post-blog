@@ -12,7 +12,6 @@ export default function FeedTemplate({ props }) {
         postLikes: props.likes,
         isLiked: false,
         postId: null,
-        creatorId: null,
         followings: [],
         isFollowing: false,
         likedPostHistory: []
@@ -88,31 +87,31 @@ export default function FeedTemplate({ props }) {
         }
     }, [state])
     useEffect(() => {
-        let usersFollowing = state.currentUser?.following
-        if (state.isAuthenticated) {
+        let usersFollowing = state.currentUser.following?.length && state.currentUser.following
+        if (state.isAuthenticated && usersFollowing) {
             let checkIsFollowing = []
             if (usersFollowing && usersFollowing.length > 0) {
                 for (let i = 0; i <= usersFollowing.length; i++) {
-                    checkIsFollowing.push(usersFollowing[i])
+                    if(usersFollowing[i] === props.creatorId){
+                        checkIsFollowing.push(usersFollowing[i])
+                    }
                 }
             }
-            setCurrentState(prevState => {
-                return {
-                    ...prevState, followings: checkIsFollowing
-                }
-            })
+            if(checkIsFollowing.find(userId => userId === props.creatorId)){
+                setCurrentState(prevState => {
+                    return {
+                        ...prevState, followings: checkIsFollowing, isFollowing: true
+                    }
+                })    
+            }
         }
-    }, [state])
+    }, [state.follow])
 
 
     function handleFollowUser(followOrUnfollow, followedUserId) {
-        setState(prevState => {
-            return { ...prevState, follow: prevState.follow + 1 }
-        })
-
         try {
             if (!state.isAuthenticated) {
-                const error = new Error("Please sign in to follow user")
+                const error = new Error("Please sign in to folow user")
                 error.title = "Unauthorized access"
                 throw error
             }
@@ -121,9 +120,11 @@ export default function FeedTemplate({ props }) {
                 setCurrentState(prevState => {
                     return {
                         ...prevState,
-                        isFollowing: true,
-                        creatorId: followedUserId
+                        isFollowing: true
                     }
+                })
+                setState(prevState => {
+                    return { ...prevState, follow: prevState.follow + 1 }
                 })
             }
             if (followOrUnfollow === "unfollow") {
@@ -131,11 +132,10 @@ export default function FeedTemplate({ props }) {
                     return { ...prevState, isFollowing: false }
                 })
                 currentState.followings.pop(followedUserId)
+                setState(prevState => {
+                    return { ...prevState, follow: prevState.follow - 1 }
+                })
             }
-            setState(prevState => {
-                return { ...prevState, follow: prevState.follow - 1 }
-            })
-
         } catch (err) {
             catchError(err)
         }
@@ -146,16 +146,16 @@ export default function FeedTemplate({ props }) {
                 <Link className="post-links">
                     <p className="author-date__section">Slammed by
                         <span className="posted-by">
-                            <Link to={props.creatorId ? `/user/${props.creatorId}` : ""} style={{ color: "rgb(37, 13, 75)", textDecoration: "underline" }}>{props?.creator || "Anonymuous User"}</Link>
+                            <Link to={props.creatorId ? `/user/${props.creatorId}` : ""} style={{ color: "rgb(37, 13, 75)", border: "1px solid grey", padding: "0.15rem", borderRadius: "0.2rem" }}>{props?.creator || "Anonymuous User"}</Link>
                         </span>
                         <span className="createdAt-time">on {props?.createdAt || "23/04/2024"}</span>
                     </p>
                 </Link>
                 {state.user?._id !== props.creatorId && <div>
                     {
-                        currentState.followings.find(user => user === props.creatorId) || currentState.isFollowing && currentState.creatorId === props.creatorId ?
+                        currentState.isFollowing ?
                             <p className="follow__unfollow follow_unfollow-extras" onClick={() => handleFollowUser("unfollow", props.creatorId)}>Unfollow</p> :
-                            <p className="follow__unfollow follow_unfollow-extras" onClick={() => handleFollowUser("follow", props.creatorId)}>Follow</p>
+                            <p className="follow__unfollow follow_unfollow-extras" onClick={() => handleFollowUser("follow", props.creatorId)}>Follow +</p>
                     }
                 </div>
                 }

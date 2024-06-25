@@ -36,6 +36,19 @@ export default function InputComponent({ props }) {
                 onBlur={props.onBlur}
             />
         }
-        {!props.valid && props.touched && <p className="input__error-message">This field cannot be empty</p>}
+        {props.value.trim() === "" && props.touched && <p className="input__error-message">This field cannot be empty</p>}
+        {props.value.length > 1 && props.touched && <div>
+            {!props.valid && props.touched && props.id === "title" && <p className="input__error-message">Title must be above 4 characters</p>}
+        </div>
+        }
+
+        {props.value.length > 0 && props.touched &&
+            <div>
+                {!props.valid && props.touched && props.id === "email" && <p className="input__error-message">This must be a valid email</p>}
+                {!props.valid && props.touched && props.id === "name" && <p className="input__error-message">Name must be above 3 characters</p>}
+                {!props.valid && props.touched && props.id === "enquiry" && <p className="input__error-message">Enquiry must be above 10 characters</p>}
+                {!props.valid && props.touched && props.id === "content" && <p className="input__error-message">Content must be above 6 characters</p>}
+            </div>
+        }
     </div>
 }

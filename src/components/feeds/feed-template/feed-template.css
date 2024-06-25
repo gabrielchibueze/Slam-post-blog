@@ -1,10 +1,11 @@
 .slam-feed-section{
     width: 100%;
-    border: 1px solid gray;
+    border: 1.5px solid rgb(96, 130, 156);
     padding: 0rem 0rem 0rem 0rem;
     box-sizing: 1rem 2rem 4rem;
-    box-shadow: 2px 5px 8px rgb(59, 56, 54);
-    border-radius: 0.5rem;
+    background-color: white;
+    box-shadow: 2px 5px 6px rgb(59, 56, 54);
+    border-radius: 0.1rem;
 }
 
 .slam-feed-section > section, .slam-feed-section >p {
@@ -14,6 +15,11 @@
 .posted-by {
     font-weight: bold;
 }
+
+/* .posted-by:hover{
+    box-shadow: 3px 1px 8px;
+} */
+ 
 .post-title {
     margin: 0px;
 }
@@ -21,7 +27,9 @@
 .post-links>  p > span {
     margin: 0.3rem;
 }
-
+.post-section > p {
+    margin: 0px;
+}
 .button-section{
     display: flex;
     justify-content: right;
@@ -33,7 +41,91 @@
     text-transform: none;
     color: black;
 }
+.post-links > h2 {
+    /* margin-top: 0.5rem; */
+    margin: 0rem;
+}
 
-.slam-feed-section > .top-section {
-    margin-left: 1rem;
+.slam-feed-section > .feed-template__top-section {
+    margin: 0rem 1rem;
+    padding: 0rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.content-section {
+    display: flex;
+    width: 100%;
+    
+}
+
+.source-image {
+    height: 65px;
+    width: 80px;
+    border-radius: 0.1rem;
+    margin: 1rem;
+}
+
+.post-section {
+    padding-right: 1rem;
+    width: 100%
+}
+
+.author-date__section {
+    font-size: 0.9rem;
+    margin-bottom: 0px;
+}
+
+@media(max-width:500px){
+    .source-image{
+        display: none;
+    }
+    .content-section {
+        margin-left: 1rem;
+        
+    }
+}
+.buttons__feed-templates {
+    display: flex;
+    justify-content: space-between;
+    /* margin: 1rem; */
+    margin-left: 0rem;
+    height: 70px;
+}
+
+@media(max-width: 600px){
+    .buttons__feed-templates{
+        margin-right: 0.5rem;
+    }
+}
+.like-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.3rem;
+}
+.like-buttons {
+    display: flex;
+    gap: 1rem;
+}
+.like-buttons > p{
+    cursor: pointer;
+    font-size: 1.5rem;
+    /* color: whitesmoke; */
+}
+
+.like {
+    color: red;
+}
+
+
+@media(max-width: 600px){
+    .createdAt-time {
+        display: none;
+    }
+}
+@media(min-width: 600px){
+    .follow_unfollow-extras {
+        margin-right: 2.3vw
+    }
 }

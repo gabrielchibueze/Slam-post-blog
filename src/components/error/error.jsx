@@ -1,30 +1,26 @@
 /* eslint-disable react/prop-types */
-import { Component } from "react";
+import { Fragment, useContext } from "react";
 import ErrorCanfirmPopup from "../errorCanfirmPopup/errorCanfirmPopup";
+import { FeedContext } from "../feedContextProvider/feedContextProvider";
 
-class ErrorBoundary extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { hasError: false }
+const ErrorBoundary = (props) => {
 
-  }
-  static getDerivedStateFromError(error) {
-    if (error) {
-      return { hasError: true }
-    }
-  }
-  render() {
-    if (this.state.hasError) {
-      return <ErrorCanfirmPopup
-        props={{
-          title: "Error Message", message: "An Error Occured",
+  const { state, errorHandler } = useContext(FeedContext)
+  return (
+    <Fragment>
+      {state.error && state.error.length > 0 && <ErrorCanfirmPopup
+        props={{ isError: state.error?.length > 0,
+          title: state.error[0].title || "Error message", message: state.error[0].message,
           buttonOneType: "button",
-          buttonOneTitle: "Close", buttonOneFunction: () => this.setState({ hasError: false })
+          buttonOneTitle: "Close", buttonOneFunction: errorHandler
         }} />
-    }
-    
-    return this.props.children
-  }
+      }
+      {props.children}
+    </Fragment>
+
+  )
+
 }
+
 
 export default ErrorBoundary

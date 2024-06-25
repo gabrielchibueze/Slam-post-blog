@@ -1,13 +1,13 @@
 
 .input {
-    margin: 0.25rem 0;
+    margin: 0.1rem 0;
     width: 93%;
   }
   
   .input > label {
     display: block;
-    /* text-transform: uppercase; */
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
     font-size: large;
   }
   input{
@@ -20,7 +20,9 @@
     padding: 0.3rem 0.5rem;
     width: 100%;
     border-radius: 0.4rem;
-    border: 1px solid #705b5b;
+    /* border: 1.5px solid rgb(37, 13, 75); */
+    border: 1.5px solid rgba(37, 13, 75, 0.473);
+
   }
   
   .input .touched.invalid {
@@ -36,5 +38,11 @@
   }
   
   .input__error-message {
+    color: rgba(255, 0, 0, 0.644);
     margin: 0px;
+    font-weight: lighter;
+  }
+
+  .file-picker {
+    cursor: pointer;
   }

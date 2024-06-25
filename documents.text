@@ -1,0 +1,233 @@
+import {
+    Link, Outlet, useLocation,
+    // useNavigate,
+    useParams
+} from "react-router-dom"
+import "./user.css"
+import { useContext, useEffect, useState } from "react"
+import { FeedContext } from "../../feedContextProvider/feedContextProvider"
+import SideBar from "../../outlet/side-bar"
+import ErrorCanfirmPopup from "../../errorCanfirmPopup/errorCanfirmPopup"
+import FeedEdit from "../../feeds/feedEdit/feedEdit"
+import Loader from "../../loader/loader"
+
+export default function User() {
+    const { cancelEditPostHandler,
+        finishedEditHandler,
+        yesButtonFunctions,
+        statusInputChangeHandler,
+        statusUpdateHandler,
+        cancelDeletetPost,
+        createNewPost,
+        state,
+        followUser,
+        setState,
+        catchError
+    } = useContext(FeedContext);
+
+    const [currentState, setCurrentState] = useState({
+        loading: false, user: null, likes: null,
+        followedUserId: null,
+        following: null, followers: null, isFollowed: false, isFollowing: false
+    })
+    const { pathname } = useLocation()
+    const { id } = useParams()
+
+
+    const handleFetchThisUser = () => {
+     
+        fetch(`http://localhost:5080/auth/${id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": state.csrfToken
+            },
+            credentials: 'include',
+        }).then(res => {
+            if (!res.ok) {
+                const error = new Error("Invalid user details... check if login details are correct");
+                error.title = "Authentication error"
+                throw error;
+            }
+            return res.json()
+        }).then(resData => {
+            setCurrentState(prevState => {
+                return {
+                    ...prevState,
+                    user: resData,
+                    likes: resData.likes?.length,
+                    followers: resData.followers?.length,
+                    following: resData.following?.length,
+                }
+            })
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    slammersPosts: resData.posts,
+                }
+            })
+        }).catch(catchError)
+    }
+
+    useEffect(() => {
+        window.scrollTo({
+            top: 0
+        })
+        setCurrentState(prevState => {
+            return { ...prevState, loading: true }
+        })
+        setState(prevState => {
+            return { ...prevState, loading: true }
+        })
+
+        handleFetchThisUser();
+
+        setCurrentState(prevState => {
+            return { ...prevState, loading: false }
+        })
+        setState(prevState => {
+            return { ...prevState, loading: false }
+        })
+    }, [])
+
+    useEffect(() => {
+        handleFetchThisUser()
+    }, [state.likes, state.follow])
+
+
+    useEffect(() => {
+        let usersFollowers = currentState.user?.followers
+        if (state.isAuthenticated && usersFollowers) {
+            // let checkIsFollowing = []
+            // if (usersFollowers && usersFollowers.length > 0) {
+            //     for (let i = 0; i <= usersFollowers.length; i++) {
+            //         checkIsFollowing.push(usersFollowers[state.user._id])
+            //     }
+            // }
+            setCurrentState(prevState => {
+                return {
+                    ...prevState, isFollowing: usersFollowers.find(userId => userId === state.user._id)
+                }
+            })
+        }
+    }, [state])
+
+
+    function handleFollowUser(followOrUnfollow, currentUserId, followedUserId) {
+        console.log(followedUserId)
+        console.log(currentUserId)
+        try {
+            if (!state.isAuthenticated) {
+                const error = new Error("Please sign in to folow user")
+                error.title = "Unauthorized access"
+                throw error
+            }
+            followUser(followOrUnfollow, currentUserId, followedUserId)
+            if (followOrUnfollow === "follow") {
+                setCurrentState(prevState => {
+                    return {
+                        ...prevState, followers: prevState.followers + 1,
+                        isFollowed: true, followedUserId: followedUserId
+                    }
+                })
+                setState(prevState => {
+                    return { ...prevState, follow: prevState.follow + 1 }
+                })
+            }
+            if (followOrUnfollow === "unfollow") {
+                setCurrentState(prevState => {
+                    return { ...prevState, followers: prevState.followers - 1, isFollowed: false }
+                })
+                // currentState.followers.pop(followedUserId)
+                setState(prevState => {
+                    return { ...prevState, follow: prevState.follow - 1 }
+                })
+            }
+        } catch (err) {
+            catchError(err)
+        }
+    }
+
+    return <div className="displayed-outlet">
+        {currentState.loading ? <div style={{ textAlign: "center" }}>
+            <p>Loading.... please wait</p>
+            <Loader />
+        </div> : <>
+            <div className="user-profile__sidebar">
+                <SideBar props={{
+                    isAuthenticated: state.isAuthenticated,
+                    isCreateNewPost: state.isCreateNewPost,
+                    editLoading: state.editLoading,
+                    cancelEditPostHandler: cancelEditPostHandler,
+                    finishedEditHandler: finishedEditHandler,
+                    createNewPost: createNewPost,
+                    statusInput: state.statusInput,
+                    statusUpdateHandler: statusUpdateHandler,
+                    statusInputChangeHandler: statusInputChangeHandler,
+                }} />
+            </div>
+            <div className="main-outlet">
+                {state.isEditing && <FeedEdit props={{
+                    isAuthenticated: state.isAuthenticated,
+                    selectedPost: state.editPost,
+                    isEditing: state.isEditing,
+                    editLoading: state.editLoading,
+                    cancelEditPostHandler: cancelEditPostHandler,
+                    finishedEditHandler: finishedEditHandler
+                }}
+                />}
+                {state.deletePostRequest &&
+                    <ErrorCanfirmPopup
+                        props={{
+                            title: "Comfirm delete",
+                            message: "Are you sure you want to delete this post?",
+                            buttonOneType: "button",
+                            buttonOneTitle: "Yes",
+                            buttonOneFunction: yesButtonFunctions,
+                            buttonTwoType: "reset",
+                            buttonTwoTitle: "No",
+                            buttonTwoFunction: cancelDeletetPost
+
+                        }} />
+                }
+                <div className="user-profile">
+                    <div className="user-profile__top-section">
+                        <div className="main-user__top-section">
+                            <div className="user-personal__section">
+                                <img src={`${currentState.user?.photo || "/gabriel5.jpeg"}`} className="user-profile__photo" />
+                                <div className="user-personal__details">
+                                    {state.isAuthenticated && id === state.user?._id && <h2>{currentState.user?.fullname}</h2>}
+                                    <p className={id != state.user?._id ? "bolden" : ""}>@{currentState.user?.username.split()[0].toLowerCase()}</p>
+                                </div>
+                            </div>
+                            {currentState.user?._id !== state.user?._id && <div>
+                                {
+                                    currentState.isFollowing?
+                                        <p className="follow__unfollow" onClick={() => handleFollowUser("unfollow", currentState.user?._id)}>Unfollow</p> :
+                                        <p className="follow__unfollow" onClick={() => handleFollowUser("follow", currentState.user?._id)}>Follow +</p>
+                                }
+                            </div>
+                            }
+                        </div>
+                        <div className="user-activities">
+                            <p><span>{currentState.user?.followers?.length || 0} </span>Followers</p>
+                            <p><span>{currentState.user?.following?.length || 0} </span>Following</p>
+                            <p><span>{currentState.user?.posts.length || 0} </span>Total slams</p>
+                            <p><span>{currentState.user?.likes.length || 0} </span>Likes</p>
+                        </div>
+                    </div>
+                    <div className="sub-links__user-profile">
+                        <Link to="" className={pathname === `/user/${id}` ? "subpaths isUserActive" : "sub-paths"}>Slams</Link>
+                        <Link to="favorites" className={pathname === `/user/${id}/favorites` ? "subpaths isUserActive" : "sub-paths"}>Favorites</Link>
+                        <Link to="trending" className={pathname === `/user/${id}/trending` ? "subpaths isUserActive" : "sub-paths"}>Trending</Link>
+                    </div>
+                    <Outlet />
+                </div>
+
+            </div>
+
+        </>
+
+        }
+    </div>
+}

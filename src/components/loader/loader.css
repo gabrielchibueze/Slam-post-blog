@@ -1,7 +1,7 @@
 .loader {
     /* display: inline-block; */
-    height: 64px;
-    width: 64px;
+    height: 2px;
+    width: 60px;
     position: relative;
     cursor: not-allowed;
     display: flex;
@@ -11,17 +11,16 @@
     margin: 0 auto;
 }
 
-.loader  div {
-    height: 50px;
-    width: 50px;
+.loader > div {
+    height: 25px;
+    width: 25px;
     display: block;
     margin: 6px;
     box-sizing: border-box;
     position: absolute;
-    border: 6px solid blueviolet;
-    border-color: rgb(115, 59, 167) transparent transparent transparent;
+    border: 2px solid blueviolet;
+    border-color: #03045e transparent transparent transparent;
     border-radius: 50%;
-    background-color: rgba(225, 232, 236, 0.068) ;
     animation: loader 0.8s cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite;
 
 }

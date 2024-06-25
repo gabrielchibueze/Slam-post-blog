@@ -39,7 +39,7 @@ export default function PostUpdateFeedComponent({ props }) {
             {comfirm &&
                 <ErrorCanfirmPopup
                     props={{
-                        title: "Comfirm Cancel",
+                        title: "Confirm cancel",
                         message: "Are you sure you want to cancel?",
                         buttonOneType: "button",
                         buttonOneTitle: "Yes",

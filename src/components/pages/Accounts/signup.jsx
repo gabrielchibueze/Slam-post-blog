@@ -3,9 +3,10 @@ import ButtonComponent from "../../button/button";
 import FormComponent from "../../forms.jsx/form";
 import InputComponent from "../../input/input-component";
 import "./signin-login-page.css"
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { isEmail, length, required } from "../../utils/validators";
 import { useNavigate } from "react-router-dom/dist";
+import { FeedContext } from "../../feedContextProvider/feedContextProvider";
 
 const USER_FORM = {
     fullname: {
@@ -35,50 +36,66 @@ const USER_FORM = {
 }
 
 export default function SignupPage() {
-    const [state, setState] = useState({
+
+    const {
+        state,
+        setState,
+        catchError
+    } = useContext(FeedContext)
+
+    const [currentState, setCurrentState] = useState({
         loading: false,
         userForm: USER_FORM,
         formIsValid: false
     })
+    useEffect(() => {
+        window.scrollTo({
+            top: 0
+        })
+    }, [])
     const navigate = useNavigate()
 
     const handleSubmitCreateAcount = (event) => {
         event.preventDefault();
-        fetch("http://localhost:8080/auth/signup", {
+        setState(prevState => {
+            return { ...prevState, loading: true }
+        })
+        fetch("http://localhost:5080/auth/signup", {
             method: "put",
             body: JSON.stringify({
-                fullname: state.userForm.fullname.value,
-                email: state.userForm.email.value,
-                username: state.userForm.username.value,
-                password: state.userForm.password.value
+                fullname: currentState.userForm.fullname.value,
+                email: currentState.userForm.email.value,
+                username: currentState.userForm.username.value,
+                password: currentState.userForm.password.value
             }),
             headers: {
-                "Content-Type": "Application/json"
-            }
+                "Content-Type": "application/json",
+                "X-CSRF-Token": state.csrfToken
+            },
+            credentials: "include"
         }).then(res => {
             if (!res.ok) {
-                const error = new Error("Error occured creating user account");
-                console.log(error);
+                const error = new Error("Error occured creating user account, Check if email is not already registered");
+                error.title = "Sign up error"
                 throw error;
             }
 
             return res.json()
+            // eslint-disable-next-line no-unused-vars
         }).then(resData => {
-            console.log(resData)
             setState(prevState => {
                 return { ...prevState, loading: false }
             })
-
+            const success = new Error("Sign in to your account to proceed")
+            success.title = "Successful sign up"
             navigate("/login")
+            throw success
 
-
-        }).catch(err => {
-            console.log(err)
-        })
+        }).catch(catchError)
     }
 
     const inputBlurHandler = (input) => {
-        setState(prevState => {
+        setCurrentState(prevState => {
             const currentInputForm = {
                 ...prevState.userForm, [input]: {
                     ...prevState.userForm[input], touched: true
@@ -90,7 +107,7 @@ export default function SignupPage() {
         })
     }
     const handleFormInputChange = (inputId, inputValue) => {
-        setState(prevState => {
+        setCurrentState(prevState => {
             let isValid = true
             for (let validator of prevState.userForm[inputId].validators) {
                 isValid = isValid && validator(inputValue)
@@ -113,8 +130,7 @@ export default function SignupPage() {
             }
         })
     }
-console.log(state.formIsValid)
-    console.log(state.userForm)
+
 
     return <div className="accounts-page">
         <div className="signup-page">
@@ -123,62 +139,64 @@ console.log(state.formIsValid)
                 <p>Quickly create an account to post your slam and get updates on recent slams</p>
             </div>
             <div className="signup-form-control">
-                <FormComponent props={{ onSubmit: state.formIsValid ? handleSubmitCreateAcount : null }}>
-                    <InputComponent props={{
-                        id: "fullname",
-                        type: "text",
-                        name: "fullname",
-                        label: "Full name",
-                        control: "input",
-                        placeholder: "Enter your full name",
-                        onChange: handleFormInputChange,
-                        onBlur: () => inputBlurHandler("fullname"),
-                        touched: state.userForm["fullname"].touched,
-                        valid: state.userForm["fullname"].value,
-                        value: state.userForm["fullname"].value,
-                    }} />
-                    <InputComponent props={{
-                        id: "email",
-                        type: "email",
-                        name: "email",
-                        label: "Email",
-                        control: "input",
-                        placeholder: "Enter your email",
-                        onChange: handleFormInputChange,
-                        onBlur: () => inputBlurHandler("email"),
-                        touched: state.userForm["email"].touched,
-                        valid: state.userForm["email"].value,
-                        value: state.userForm["email"].value,
-                    }} />
-                    <InputComponent props={{
-                        id: "username",
-                        type: "text",
-                        name: "username",
-                        label: "Username",
-                        control: "input",
-                        placeholder: "Choose username",
-                        onChange: handleFormInputChange,
-                        onBlur: () => inputBlurHandler("username"),
-                        touched: state.userForm["username"].touched,
-                        valid: state.userForm["username"].value,
-                        value: state.userForm["username"].value,
-                    }} />
-                    <InputComponent props={{
-                        id: "password",
-                        type: "password",
-                        name: "password",
-                        label: "Password",
-                        control: "input",
-                        placeholder: "Password",
-                        onChange: handleFormInputChange,
-                        onBlur: () => inputBlurHandler("password"),
-                        touched: state.userForm["password"].touched,
-                        valid: state.userForm["password"].value,
-                        value: state.userForm["password"].value,
+                <FormComponent props={{ onSubmit: currentState.formIsValid ? handleSubmitCreateAcount : null }}>
+                    <div className="input-form-classes">
+                        <InputComponent props={{
+                            id: "fullname",
+                            type: "text",
+                            name: "fullname",
+                            label: "Full name",
+                            control: "input",
+                            placeholder: "Enter your full name",
+                            onChange: handleFormInputChange,
+                            onBlur: () => inputBlurHandler("fullname"),
+                            touched: currentState.userForm["fullname"].touched,
+                            valid: currentState.userForm["fullname"].value,
+                            value: currentState.userForm["fullname"].value,
+                        }} />
+                        <InputComponent props={{
+                            id: "email",
+                            type: "email",
+                            name: "email",
+                            label: "Email",
+                            control: "input",
+                            placeholder: "Enter your email",
+                            onChange: handleFormInputChange,
+                            onBlur: () => inputBlurHandler("email"),
+                            touched: currentState.userForm["email"].touched,
+                            valid: currentState.userForm["email"].value,
+                            value: currentState.userForm["email"].value,
+                        }} />
+                        <InputComponent props={{
+                            id: "username",
+                            type: "text",
+                            name: "username",
+                            label: "Username",
+                            control: "input",
+                            placeholder: "Choose username",
+                            onChange: handleFormInputChange,
+                            onBlur: () => inputBlurHandler("username"),
+                            touched: currentState.userForm["username"].touched,
+                            valid: currentState.userForm["username"].value,
+                            value: currentState.userForm["username"].value,
+                        }} />
+                        <InputComponent props={{
+                            id: "password",
+                            type: "password",
+                            name: "password",
+                            label: "Password",
+                            control: "input",
+                            placeholder: "Password",
+                            onChange: handleFormInputChange,
+                            onBlur: () => inputBlurHandler("password"),
+                            touched: currentState.userForm["password"].touched,
+                            valid: currentState.userForm["password"].value,
+                            value: currentState.userForm["password"].value,
 
-                    }} />
+                        }} />
 
-                    <ButtonComponent props={{ type: "submit", title: "Create account", onClick: state.formIsValid ? handleSubmitCreateAcount  : null}} />
+                    </div>
+                    <ButtonComponent props={{ type: "submit", design: "raised", loading: state.loading, title: "Create account", onClick: currentState.formIsValid ? handleSubmitCreateAcount : null }} />
 
                 </FormComponent>
             </div>

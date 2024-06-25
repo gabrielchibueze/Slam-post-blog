@@ -1,64 +1,75 @@
-.accounts-page{
-    /* height: 70vh; */
-margin: 3rem 2rem 6rem  2rem;
+.accounts-page {
+    margin: 3rem 2rem 6rem 2rem;
 }
-.signup-page{
+
+.signup-page {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.signup-form-control {
+    width: 85%;
+    display: flex;
+    justify-self: center;
+    align-items: center;
+}
+.input-form-classes {
+    width: 93%;
+}
+@media(max-width: 800px) {
+    .signup-form-control {
+        max-width: 450px;
+    }
+}
+
+@media(min-width: 800px) {
+    .signup-page {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 4rem;
     }
 
     .signup-form-control {
-        width: 85%;
-        display: flex;
-        justify-self: center;
-        align-items: center;
+        width: 40%;
     }
-    @media(max-width: 800px){
-        .signup-form-control{
-            max-width: 450px;
-        }
-    }
-    @media(min-width: 800px){
-        .signup-page{
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            gap: 4rem;
-        }
-        .signup-form-control {
-            width: 40%;
-        }
-        .signup-link  > h3 {
-            margin-left: 200px;
-        }
-        .accounts-page{
-            /* height: 70vh; */
-        margin: 1rem 2rem 6rem  2rem;
-        }
-    }
-    .signup-intro {
-        background-color: rgba(223, 115, 250, 0.342);
-        box-shadow: 2px 5px 8px rgb(9, 70, 75);
-        padding: 1rem;
-        border: 1px solid grey;
-        border-radius: 0.5rem;
-        min-width: 300px;
-        max-width: 400px;
-    }
-    
-    .signup-link {
-        display: flex;
-        justify-content: center;
-        align-items: center; 
-        gap: 1rem;
-    }
+
     .signup-link>h3 {
-        margin: 0px;
+        margin-left: 200px;
     }
-    .signup-link > a {
-        font-weight: bolder;
+
+    .accounts-page {
+        margin: 1rem 2rem 6rem 2rem;
     }
-    .signup-link > a:hover{
-        color: rgb(70, 43, 95);
-    }
+}
+
+.signup-intro {
+    /* background-color: rgba(223, 115, 250, 0.342); */
+    background-color: rgba(238, 168, 171, 0.253);
+    box-shadow: 2px 5px 8px rgb(9, 70, 75);
+    padding: 1rem;
+    border: 1px solid grey;
+    border-radius: 0.5rem;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.signup-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.signup-link>h3 {
+    margin: 0px;
+}
+
+.signup-link>a {
+    font-weight: bolder;
+}
+
+.signup-link>a:hover {
+    color: rgb(70, 43, 95);
+}

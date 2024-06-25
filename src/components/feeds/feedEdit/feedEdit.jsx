@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import Modal from "../../modal/modal";
 import FormComponent from "../../forms.jsx/form";
 import InputComponent from "../../input/input-component";
@@ -10,13 +11,16 @@ import { generateBase64FromImage } from "../../utils/image";
 import { required, length } from "../../utils/validators";
 import ImagePreview from "../../image-preview-component/image-preview";
 import "./feedEdit.css"
+import { FeedContext } from "../../feedContextProvider/feedContextProvider";
+import { Link } from "react-router-dom";
+import ButtonComponent from "../../button/button";
 
 
 const FeedEdit = ({ props }) => {
 
     const POST_FORM = {
         title: {
-            value: props.statusInput || '',
+            value: props.statusInput || "",
             valid: false,
             touched: false,
             validators: [required, length({ min: 5 })]
@@ -34,8 +38,8 @@ const FeedEdit = ({ props }) => {
             validators: [required, length({ min: 7 })]
         }
     };
-
-    const [state, setState] = useState({
+    const { state } = useContext(FeedContext)
+    const [currentState, setCurrentState] = useState({
         postForm: POST_FORM,
         formIsValid: false,
         imagePreview: null,
@@ -44,7 +48,7 @@ const FeedEdit = ({ props }) => {
 
     useEffect(() => {
         if (props.selectedPost && props.isEditing) {
-            setState(prevState => {
+            setCurrentState(prevState => {
                 const upDatePostForm = {
                     title: {
                         ...prevState.postForm.title,
@@ -65,21 +69,21 @@ const FeedEdit = ({ props }) => {
                 return { postForm: upDatePostForm, formIsValid: true }
             })
         } else if (props.isCreateNewPost) {
-            setState({ postForm: POST_FORM })
+            setCurrentState({ postForm: POST_FORM })
         }
     }, [])
 
     const cancelEditPost = () => {
         // takes true or false
-        setState(prevState => {
+        setCurrentState(prevState => {
             return {
-                ...prevState, cancelRequest: !state.cancelRequest
+                ...prevState, cancelRequest: !currentState.cancelRequest
             }
         })
     }
     const yesButtonFunctions = () => {
         // function to comfrim cancel of edit post
-        setState({ cancelRequest: false })
+        setCurrentState({ cancelRequest: false })
 
         cancelPostChangeHandler()
     }
@@ -88,17 +92,16 @@ const FeedEdit = ({ props }) => {
     const postInputChangeHandler = (input, value, files) => {
         if (files) {
             generateBase64FromImage(files[0]).then(B64 => {
-                setState(prevState => {
+                setCurrentState(prevState => {
                     return { ...prevState, imagePreview: B64 }
                 })
             }).catch(err => {
-                console.log(err)
-                setState(prevState => {
+                setCurrentState(prevState => {
                     return { ...prevState, imagePreview: null }
                 })
             })
         }
-        setState(prevState => {
+        setCurrentState(prevState => {
             let isValid = true;
             for (const validators of prevState.postForm[input].validators) {
                 isValid = isValid && validators(value)
@@ -109,7 +112,7 @@ const FeedEdit = ({ props }) => {
                     value: files ? files[0] : value,
                     valid: isValid,
                     touched: true,
-                    validators: state.postForm[input].validators
+                    validators: currentState.postForm[input].validators
                 }
             }
             let formIsValid = true;
@@ -126,7 +129,7 @@ const FeedEdit = ({ props }) => {
     }
 
     const inputBlurHandler = (input) => {
-        setState(prevState => {
+        setCurrentState(prevState => {
             const currentInputForm = {
                 ...prevState.postForm, [input]: {
                     ...prevState.postForm[input], touched: true
@@ -139,7 +142,7 @@ const FeedEdit = ({ props }) => {
     }
 
     const cancelPostChangeHandler = () => {
-        setState(prevState => {
+        setCurrentState(prevState => {
             return {
                 ...prevState,
                 postForm: POST_FORM,
@@ -153,12 +156,12 @@ const FeedEdit = ({ props }) => {
     const acceptPostChangeHandler = (event) => {
         event.preventDefault()
         const post = {
-            title: state.postForm.title.value,
-            image: state.postForm.image.value,
-            content: state.postForm.content.value
+            title: currentState.postForm.title.value,
+            image: currentState.postForm.image.value,
+            content: currentState.postForm.content.value
         }
         props.finishedEditHandler(post)
-        setState(prevState => {
+        setCurrentState(prevState => {
             return {
                 ...prevState,
                 postForm: POST_FORM,
@@ -170,15 +173,22 @@ const FeedEdit = ({ props }) => {
 
     return <Fragment>
         <Modal>
-            {/* {
-                props.editLoading && <Loader />
-            } */}
             <div className="feed-edit-popup">
-
-
                 <FormComponent props={{ onSubmit: acceptPostChangeHandler }} >
                     {
-                        !props.isAuthenticated && <p className="creat-post-reminder__authentication">You need to be signed in to create a post</p>
+                        !props.isAuthenticated && <div className="signup-prompt" style={{display: "flex", gap: "1rem", margin: "1rem auto 0rem auto"}}>
+                            <p className="creat-post-reminder__authentication">You need to be signed in to create a post</p>
+                            <Link to="/login">
+                                <ButtonComponent props={{
+                                    type: `button`,
+                                    title: `Login`,
+                                    link: null,
+                                    onClick: null,
+                                    mode: "success",
+                                    design: ""
+                                }} />
+                            </Link>
+                        </div>
                     }
                     <InputComponent props={{
                         id: "title",
@@ -188,9 +198,9 @@ const FeedEdit = ({ props }) => {
                         required: "required",
                         control: "input",
                         placeholder: "Enter slam feed title",
-                        value: state.postForm.title?.value || " ",
-                        touched: state.postForm.title?.touched || false,
-                        valid: state.postForm.title?.valid || false,
+                        value: currentState.postForm.title?.value || " ",
+                        touched: currentState.postForm.title?.touched || false,
+                        valid: currentState.postForm.title?.valid || false,
                         onBlur: () => inputBlurHandler("title"),
                         onChange: postInputChangeHandler
                     }} />
@@ -202,18 +212,18 @@ const FeedEdit = ({ props }) => {
                         control: "input",
                         name: "image",
                         placeholder: "Select image file",
-                        touched: state.postForm["image"].touched || "",
-                        valid: state.postForm["image"].valid || "",
-                        // value: state.postForm["image"].value || "",
+                        touched: currentState.postForm["image"].touched || "",
+                        valid: currentState.postForm["image"].valid || "",
+                        // value: currentState.postForm["image"].value || "",
                         onBlur: () => inputBlurHandler("image"),
                         onChange: postInputChangeHandler
                     }} />
                     <div className="new-post__image-preview">
                         {
-                            !state.imagePreview && <p>Select file to preview</p>
+                            !currentState.imagePreview && <p>Select file to preview</p>
                         }
                         {
-                            state.imagePreview && <ImagePreview props={{ imageURL: state.imagePreview }} contain left />
+                            currentState.imagePreview && <ImagePreview props={{ imageURL: currentState.imagePreview }} contain left />
                         }
                     </div>
                     <InputComponent props={{
@@ -225,9 +235,9 @@ const FeedEdit = ({ props }) => {
                         name: "content",
                         rows: 3,
                         placeholder: "Slam post comment",
-                        value: state.postForm.content.value || "",
-                        touched: state.postForm.content.touched || "",
-                        valid: state.postForm.content.valid || "",
+                        value: currentState.postForm.content.value || "",
+                        touched: currentState.postForm.content.touched || "",
+                        valid: currentState.postForm.content.valid || "",
                         onBlur: () => inputBlurHandler("content"),
                         onChange: postInputChangeHandler
 
@@ -237,7 +247,7 @@ const FeedEdit = ({ props }) => {
                         <MultiButtonComponent props={{
                             buttonProperties: [
                                 {
-                                    buttonType: "submit", buttonTitle: "Post/Update", disabled: !state.formIsValid, mode: "raised", design: "",
+                                    buttonType: "submit", loading: state.loading, buttonTitle: state.isEditing ? "Update" : "Post", disabled: !state.isAuthenticated || !currentState.formIsValid, mode: "", design: "raised",
                                     buttonLink: null, buttonFunction: acceptPostChangeHandler
                                 },
                                 {
@@ -246,10 +256,10 @@ const FeedEdit = ({ props }) => {
                                 }]
                         }} />
                     </div>
-                    {state.cancelRequest &&
+                    {currentState.cancelRequest &&
                         <ErrorCanfirmPopup
                             props={{
-                                title: "Comfirm Cancel",
+                                title: "Confirm cancel",
                                 message: "Are you sure you want to cancel?",
                                 buttonOneType: "button",
                                 buttonOneTitle: "Yes",

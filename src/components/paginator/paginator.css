@@ -2,19 +2,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top: 1rem;
 }
 
 .paginator-btn > p , .paginator-btn{
-    background-color:  blueviolet;
+    /* background-color:  blueviolet; */
+    background-color: #03045e;
     color: rgb(236, 226, 226);
-    padding: 0.2rem 0.8rem;
+    padding: 0.1rem 0.7rem;
     border-radius: 0.5rem;
     margin: 0px;
     cursor: pointer;
 }
 
 .paginator-btn:active{
-    background-color: rgb(75, 11, 139);
+    /* background-color: rgb(75, 11, 139); */
+    background-color: #2023c2;
 }
 
 .paginator-btn{

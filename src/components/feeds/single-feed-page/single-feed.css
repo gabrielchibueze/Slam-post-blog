@@ -29,16 +29,26 @@
 .back-arrow {
     width: fit-content;
     padding: 0.5rem;
-    border: 3px solid rgb(162, 87, 231);
+    /* border: 3px solid rgb(162, 87, 231); */
+    /* border: 3px solid rgb(149, 131, 167); */
+    /* border: 2px solid #03045e; */
     border-radius: 0.5rem;
+    border: 1.5px solid rgba(37, 13, 75, 0.473);
     cursor: pointer;
 }
 
-.back-arrow:active {
-    padding: 0.48rem;
+.back-arrow:active, .back-arrow:hover {
+    /* padding: 0.48rem; */
+    box-shadow: 1px 2px 5px;
     background-color: rgb(223, 234, 235);
 }
 
+.top-like__delete-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
 @media(max-width:800px) {
     .single-post-details__page {
         max-width: 80%;

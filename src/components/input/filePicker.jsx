@@ -8,7 +8,7 @@ export default function FilePicker({ props }) {
             <input
                 className={
                     [
-                        props.valid ? "valid" : "invalid", props.touched ? "touched" : "untouched"
+                        "file-picker", props.valid ? "valid" : "invalid", props.touched ? "touched" : "untouched"
                     ].join(" ")
                 }
                 id={props.id}

@@ -3,3 +3,7 @@
 font-family: 'Times New Roman', Times, serif;
 line-height: 2;
 }
+
+h1, h2, h3, p {
+    color:rgb(37, 13, 75);
+}

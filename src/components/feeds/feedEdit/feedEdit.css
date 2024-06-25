@@ -12,10 +12,24 @@
 
 @media(max-width: 800px){
     .feed-edit-popup{
-        width: 80%;
+        width: 90%;
     }
 }
 .creat-post-reminder__authentication {
     color: red;
     margin: 0 auto;
+};
+
+.signup-prompt {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    align-items: center;
+    margin-top: 5rem;
+    gap: 2rem;
+}
+@media(max-width: 500px){
+    .signup-prompt {
+        flex-direction: column;
+    }
 }

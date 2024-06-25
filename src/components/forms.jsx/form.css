@@ -1,13 +1,14 @@
-.form-component{
-    border: 1px solid gray;
+.form-component {
     border-radius: 0.5rem;
-    background-color: rgb(251, 252, 253);
+    /* background-color: rgb(251, 252, 253); */
+background-color: white;
     width: 100%;
     padding: 2rem 1.5rem;
-border: none;
+    border: 1.5px solid rgb(37, 13, 75);
+    border: 1.5px solid rgba(124, 111, 145, 0.473);
+
     margin-bottom: 2rem;
-    box-shadow: -1px -1px 13px;
-    margin: 4rem auto ;
+    margin: 4rem auto;
     justify-content: center;
     align-content: center;
 }
@@ -29,6 +30,8 @@ form>input {
 form>input:focus {
     background-color: aliceblue;
     border: 2px solid rgb(194, 162, 162);
+    /* border: 1.5px solid rgba(37, 13, 75, 0.473); */
+
     outline: none;
 }
 

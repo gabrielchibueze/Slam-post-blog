@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./single-feed.css";
 import Loader from "../../loader/loader";
 import { useParams, Link } from "react-router-dom";
@@ -9,203 +10,193 @@ import FeedEdit from "../feedEdit/feedEdit";
 import ErrorCanfirmPopup from "../../errorCanfirmPopup/errorCanfirmPopup";
 import ErrorBoundary from "../../error/error";
 import { io } from "socket.io-client";
-const socket = io("http://localhost:8080")
+import { FeedContext } from "../../feedContextProvider/feedContextProvider";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+const socket = io("http://localhost:5080")
 
-export default function SingleFeedsPage({ props }) {
+export default function SingleFeedsPage() {
+    const { startEditPostHandler,
+        cancelEditPostHandler,
+        finishedEditHandler,
+        deletePostRequest,
+        yesButtonFunctions,
+        cancelDeletetPost,
+        catchError,
+        state,
+        likePost,
+        createdAt,
+        followUser,
+        setState
+    } = useContext(FeedContext)
+
+
     const navigate = useNavigate()
     const postId = useParams().id
-    const [state, setState] = useState({
-        post: [],
-        postLoading: false,
+    const [currentState, setCurrentState] = useState({
         error: null,
-        isLoading: false,
-        editPost: null,
-        isEditing: false,
-        deletePostRequest: false,
+        post: [],
+        postLikes: null,
+        isLiked: false,
+        postId: null,
+        likedPostHistory: [],
+        user: null, likes: null,
+        followedUserId: null,
+        creatorId: null,
+        following: null, followers: null, isFollowed: false, isFollowing: false, followings: null
+
     })
 
+    useEffect(() => {
+        let usersLikedPost = state.currentUser?.likedPosts
+        if (state.isAuthenticated) {
+            let usersAllLiked = [];
+            if (usersLikedPost && usersLikedPost.length > 0) {
+                for (let i = 0; i <= usersLikedPost.length; i++) {
+                    usersAllLiked.push(usersLikedPost[i])
+                }
+            }
+            setCurrentState(prevState => {
+                return {
+                    ...prevState, likedPostHistory: usersAllLiked
+                }
+            })
+        }
 
-    async function fetchSinglePost(url) {
+        let usersFollowing = state.currentUser?.following
+        if (state.isAuthenticated) {
+            let checkIsFollowing = []
+            if (usersFollowing && usersFollowing.length > 0) {
+                for (let i = 0; i <= usersFollowing.length; i++) {
+                    checkIsFollowing.push(usersFollowing[i])
+                }
+            }
+            setCurrentState(prevState => {
+                return {
+                    ...prevState, followings: checkIsFollowing
+                }
+            })
+        }
+    }, [state])
+
+
+    function handleFollowUser(followOrUnfollow, followedUserId) {
+        try {
+            if (!state.isAuthenticated) {
+                const error = new Error("Please sign in to follow user")
+                error.title = "Unauthorized access"
+                throw error
+            }
+            followUser(followOrUnfollow, followedUserId)
+            if (followOrUnfollow === "follow") {
+                setCurrentState(prevState => {
+                    return {
+                        ...prevState,
+                        isFollowing: true,
+                    }
+                })
+                setState(prevState => {
+                    return { ...prevState, follow: prevState.follow + 1 }
+                })
+            }
+            if (followOrUnfollow === "unfollow") {
+                setCurrentState(prevState => {
+                    return { ...prevState, isFollowing: false }
+                })
+                currentState.followings.pop(followedUserId)
+                setState(prevState => {
+                    return { ...prevState, follow: prevState.follow - 1 }
+                })
+            }
+        } catch (err) {
+            catchError(err)
+        }
+    }
+
+
+
+    function clickOnLike(postId, likeOrDislike) {
+        try {
+            if (!state.isAuthenticated) {
+                const error = new Error("Please sign in to add post to favorites.")
+                error.title = "Unauthorized access"
+                throw error
+            }
+            if (likeOrDislike === "like") {
+                setCurrentState(prevState => {
+                    return { ...prevState, postLikes: prevState.postLikes + 1, isLiked: true, postId: postId }
+                })
+            }
+            if (likeOrDislike === "dislike") {
+                setCurrentState(prevState => {
+                    return { ...prevState, postLikes: prevState.postLikes - 1, isLiked: false }
+                })
+                currentState.likedPostHistory.pop(postId)
+            }
+            likePost(postId, likeOrDislike)
+        } catch (err) {
+            catchError(err)
+        }
+    }
+
+    async function fetchSinglePost() {
         try {
             setState(prevState => {
                 return { ...prevState, postLoading: true }
             });
-            const response = await fetch(url);
+            const response = await fetch(`http://localhost:5080/feeds/posts/${postId}`);
             const data = await response.json();
             if (!data && data.post.length < 1) {
                 throw new Error("Unable to fectch post details")
             }
-            setState(prevState => {
-                return {
-                    ...prevState, post: [data.post]
-                }
-            });
-            setState(prevState => {
-                const updatePost = [...prevState.post]
-                updatePost[0].imageUrl = `${data.post.imageUrl}`;
 
+            setCurrentState(prevState => {
+                const adjustedPost = {
+                    ...data.post,
+                    imageUrl: "http://localhost:5080/" + data.post.imageUrl
+                }
                 return {
-                    ...prevState, post: updatePost, postLoading: false
+                    ...prevState, creatorId: adjustedPost.creator._id, post: [adjustedPost], postLoading: false, postLikes: adjustedPost.likes.length
                 }
             });
+            setState(prevState => {
+                return { ...prevState, postLoading: false }
+            })
+
         } catch (err) {
-            console.log(err)
+            catchError(err)
             setState(prevState => {
-                return { ...prevState, error: err, postLoading: false }
+                return { ...prevState, postLoading: false }
             });
         }
     }
-    const startEditPostHandler = (postId) => {
-        setState(prevState => {
-            const loadedPost = prevState.post.find(post => post._id === postId);
-            return {
-                ...prevState,
-                isLoading: true,
-                editPost: loadedPost,
-                isEditing: true
+    const completedEditing = async (postData) => {
+        try {
+            if (!state.isAuthenticated) {
+                navigate("/login")
+                throw Error("You must login in to continue")
             }
-        });
-    }
-
-    const cancelEditPostHandler = () => {
-        setState(prevState => {
-            return {
-                ...prevState,
-                editPost: null,
-                isEditing: false,
-                isCreateNewPost: false
-            }
-        })
-    }
-
-    const finishedEditHandler = (postData) => {
-        setState(prevState => {
-            return { ...prevState, editLoading: true }
-        })
-        let url;
-        let method;
-        if (state.isEditing) {
-            url = `http://localhost:8080/feeds/edit/${state.editPost._id}`;
-            method = "PUT"
+            finishedEditHandler(postData)
         }
-        const formData = new FormData()
-        formData.append("title", postData.title);
-        formData.append("content", postData.content);
-        formData.append("image", postData.image);
-
-        fetch(url, {
-            method: method,
-            body: formData,
-            headers: {
-                "Authorization": "Bearers " + props.token
-            }
-        }).then(res => {
-            if (res.status !== 201) {
-                throw new Error("Failed to create/update post", res.status)
-            }
-            return res.json()
-        }).then(resData => {
-            const currentPost = {
-                _id: resData.post._id,
-                creator: resData.post.creator,
-                createdAt: resData.post.createdAt,
-                title: resData.post.title,
-                content: resData.post.content,
-                imageUrl: resData.post.imageUrl
-            }
-
-            setState(prevState => {
-                return {
-                    ...prevState,
-                    posts: currentPost,
-                    isEditing: false,
-                    editPost: null,
-                    editLoading: false,
-                    isCreateNewPost: false
-                }
-            })
-        }).catch(err => {
-            console.log(err);
-            setState({
-                isEditing: false,
-                editLoading: false,
-                isCreateNewPost: false,
-                error: err,
-                editPost: null
-            })
-        })
+        catch (err) {
+            catchError(err)
+        }
     }
-    const trigerDeletePostRequest = (postId) => {
-        setState(prevState => {
-            return {
-                ...prevState, toDeletePostId: postId, deletePostRequest: true
-            }
-        })
-    }
-    const yesButtonFunctions = () => {
-        deletePostHandler(state.toDeletePostId)
-        setState(prevState => {
-            return {
-                ...prevState, deletePostRequest: false, toDeletePostId: null
-            }
-        })
-
-    }
-    const cancelDeletetPost = () => {
-        setState(prevState => {
-            return {
-                ...prevState, deletePostRequest: false, toDeletePostId: null
-            }
-        })
+    const completedDelete = async () => {
+        await yesButtonFunctions()
+        navigate("/")
     }
 
-    const deletePostHandler = (postId) => {
-        setState(prevState => {
-            return {
-                ...prevState, postLoading: true
-            }
-        });
-        fetch(`http://localhost:8080/feeds/delete/${postId}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": "Bearers " + props.token
-            }
-        })
-            .then(res => {
-                if (res.status !== 200 && res.status !== 201) {
-                    throw new Error("Deleting a post failed")
-                }
-                return res.json()
-            }).then(resData => {
-                console.log(resData)
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        posts: [],
-                        postsLoading: true
-                    };
-                });
-                navigate("/")
-
-            }).catch(catchError)
-    }
-
-    const catchError = (err) => {
-        setState(prevState => {
-            return {
-                ...prevState, error: err
-            }
-        })
-    }
     useEffect(() => {
-        fetchSinglePost(`http://localhost:8080/feeds/posts/${postId}`)
-
+        window.scrollTo({
+            top: 0
+        })
+        fetchSinglePost()
     }, [state.isEditing])
 
     useEffect(() => {
         socket.on("posts", data => {
             if (data.action === "update") {
-                setState(prevState => {
+                setCurrentState(prevState => {
                     return {
                         ...prevState, post: [data.post]
                     }
@@ -213,19 +204,22 @@ export default function SingleFeedsPage({ props }) {
             }
         })
     }, [])
+
+    function goBack() {
+        navigate(-1)
+    }
+
     if (state.postLoading) {
         return <div className="single-post-details__page">
             <Loader />
         </div>
     }
-    if (state.error) {
+    if (currentState.error) {
         return <p
             style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "80vh" }}>
             An error occured... please try again
         </p>
     }
-
-    console.lo
 
     return <div >
         <ErrorBoundary>
@@ -233,9 +227,9 @@ export default function SingleFeedsPage({ props }) {
                 state.isEditing && <FeedEdit props={{
                     selectedPost: state.editPost,
                     isEditing: state.isEditing,
-                    isAuthenticated: props.isAuthenticated,
+                    isAuthenticated: state.isAuthenticated,
                     cancelEditPostHandler: cancelEditPostHandler,
-                    finishedEditHandler: finishedEditHandler
+                    finishedEditHandler: completedEditing
                 }}
                 />}
             {state.deletePostRequest &&
@@ -245,7 +239,7 @@ export default function SingleFeedsPage({ props }) {
                         message: "Are you sure you want to delete this post?",
                         buttonOneType: "button",
                         buttonOneTitle: "Yes",
-                        buttonOneFunction: yesButtonFunctions,
+                        buttonOneFunction: completedDelete,
                         buttonTwoType: "reset",
                         buttonTwoTitle: "No",
                         buttonTwoFunction: cancelDeletetPost
@@ -253,38 +247,62 @@ export default function SingleFeedsPage({ props }) {
                     }} />
             }
             <div className="single-post-details__page">
-                <Link to="/" relative="path" className="back-to-posts"><button className="back-arrow"> {"<<<"} Back to posts</button></Link>
+                <Link className="back-to-posts"><button className="back-arrow" onClick={goBack}> {"<<<"} Back to posts</button></Link>
 
-                {!state.postLoading && state.post.length > 0 ? state.post.map((postDetail) => {
-                    console.log(postDetail)
+                {currentState.post ? currentState.post.map((postDetail) => {
                     return <div key={postDetail._id}>
-                        {
-                            props.isAuthenticated && props.user?._id.toString() === postDetail.creator._id.toString() &&
-                            <MultiButtonComponent props={{
-                                buttonProperties: [
-                                    {
-                                        buttonType: "button", buttonTitle: "Edit", mode: "flat",
-                                        design: "",
-                                        buttonLink: null,
-                                        buttonFunction: () => startEditPostHandler(postDetail._id)
-                                    },
-                                    {
-                                        buttonType: "reset", buttonTitle: "Delete", mode: "",
-                                        design: "danger",
-                                        buttonLink: null,
-                                        buttonFunction: () => trigerDeletePostRequest(postDetail._id)
-                                    }]
+                        <div className="top-like__delete-section">
+                            <div className="like-section">
+                                <div className="like-buttons">
+                                    {currentState.likedPostHistory.find(post => post === postDetail._id) || currentState.isLiked && currentState.postId === postDetail._id ?
+                                        <p className="like" onClick={() => clickOnLike(postDetail._id, "dislike")}><FaHeart /></p> :
+                                        <p className="dislike" onClick={() => clickOnLike(postDetail._id, "like")}><FaRegHeart /></p>
+                                    }
+                                </div>
+                                <p>{currentState.postLikes} Likes</p>
+                            </div>
+                            {postDetail.creator._id !== state.user?._id && <div>
+                                {
+                                    currentState.followings?.length && currentState.followings.find(user => user === postDetail.creator._id) || currentState.isFollowing ?
+                                        <p className="follow__unfollow" onClick={() => handleFollowUser("unfollow", postDetail.creator._id)}>Unfollow</p> :
+                                        <p className="follow__unfollow" onClick={() => handleFollowUser("follow", postDetail.creator._id)}>Follow +</p>
+                                }
+                            </div>
+                            }
 
-                            }} />
-                        }
+                            {
+                                state.isAuthenticated && state.user?._id.toString() === postDetail.creator._id.toString() &&
+
+                                <MultiButtonComponent props={{
+                                    buttonProperties: [
+                                        {
+                                            buttonType: "button", buttonTitle: "Edit", mode: "flat",
+                                            design: "",
+                                            buttonLink: null,
+                                            buttonFunction: () => startEditPostHandler(postDetail._id)
+                                        },
+                                        {
+                                            buttonType: "reset", buttonTitle: "Delete", mode: "",
+                                            design: "danger",
+                                            buttonLink: null,
+                                            buttonFunction: () => deletePostRequest(postDetail._id)
+                                        }]
+
+                                }} />
+
+                            }
+                        </div>
 
                         <h1 className="single-post__title">{postDetail.title}</h1>
                         <p className="single-post__creator">Slam created  by
-                            <span>{postDetail.creator.name}</span> on
-                            {(new Date(postDetail.createdAt).toLocaleDateString("en-US")) + " " + (new Date(postDetail.createdAt).toLocaleTimeString("en-US"))}
+                            <span className="posted-by">
+                                <Link to={`/user/${postDetail.creator._id}`} style={{ color: "rgb(37, 13, 75)", border: "1px solid grey", padding: "0.1rem", marginRight: "4px", marginLeft: "4px", borderRadius: "0.2rem" }}>{postDetail.creator.username || "Anonymuous User"}</Link>
+                            </span>
+                            on
+                            {" " + createdAt(postDetail.createdAt)}
                         </p>
-                        <Link to={`http://localhost:8080/${postDetail.imageUrl}`} target="_blank">
-                            <img className="single-post__image" src={`http://localhost:8080/${postDetail.imageUrl}`} />
+                        <Link to={postDetail.imageUrl} target="_blank">
+                            <img crossOrigin="ananymous" className="single-post__image" src={postDetail.imageUrl} />
                         </Link>
                         <p className="single-post__content" >{postDetail.content}</p>
                     </div>
@@ -293,7 +311,6 @@ export default function SingleFeedsPage({ props }) {
                 }
 
             </div>
-
         </ErrorBoundary>
     </div>
 }
