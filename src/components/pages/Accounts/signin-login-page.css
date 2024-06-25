@@ -9,13 +9,13 @@
 }
 
 .signup-form-control {
-    width: 85%;
+    width: 100%;
     display: flex;
     justify-self: center;
     align-items: center;
 }
 .input-form-classes {
-    width: 93%;
+    width: 100%;
 }
 @media(max-width: 800px) {
     .signup-form-control {
@@ -46,15 +46,17 @@
 
 .signup-intro {
     /* background-color: rgba(223, 115, 250, 0.342); */
-    background-color: rgba(238, 168, 171, 0.253);
-    box-shadow: 2px 5px 8px rgb(9, 70, 75);
+    /* background-color: rgba(238, 168, 171, 0.253); */
+    box-shadow: 2px 5px 8px rgb(142, 158, 172);
     padding: 1rem;
     border: 1px solid grey;
     border-radius: 0.5rem;
     min-width: 300px;
     max-width: 400px;
 }
-
+.signup-intro >h3 {
+    margin: 0rem;
+}
 .signup-link {
     display: flex;
     justify-content: center;

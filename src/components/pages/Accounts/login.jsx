@@ -117,7 +117,7 @@ export default function LoginPage(props) {
     return <div className="accounts-page">
         <div className="signup-page">
             <div className="signup-intro">
-                <h2>Welcome back to SLaM!!</h2>
+                <h3>Welcome back to SLaM!!</h3>
                 <p>Login into your account to access your slam posts and get recent updates in the SLaM community</p>
             </div>
             <div className="signup-form-control">

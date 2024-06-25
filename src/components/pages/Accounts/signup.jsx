@@ -135,7 +135,7 @@ export default function SignupPage() {
     return <div className="accounts-page">
         <div className="signup-page">
             <div className="signup-intro">
-                <h2>Happy to join SLaM?</h2>
+                <h3>Happy to join SLaM?</h3>
                 <p>Quickly create an account to post your slam and get updates on recent slams</p>
             </div>
             <div className="signup-form-control">
