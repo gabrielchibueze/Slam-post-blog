@@ -36,7 +36,7 @@ export default function User() {
 
     const handleFetchThisUser = () => {
 
-        fetch(`http://localhost:5080/auth/${id}`, {
+        fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/auth/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

@@ -87,7 +87,7 @@ export default function FeedContextProvider({ children }) {
             })
         }
 
-        fetch(`http://localhost:5080/feeds/posts?limit=${state.itemsPerPage}&page=${state.postPage}`).then(res => {
+        fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/posts?limit=${state.itemsPerPage}&page=${state.postPage}`).then(res => {
             if (!res.ok) {
                 throw new Error("Error occcured fetching post")
             }
@@ -133,7 +133,7 @@ export default function FeedContextProvider({ children }) {
         })
     }
     const statusUpdateHandler = () => {
-        let url = "http://localhost:5080/feeds/status"
+        let url = "https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/status"
         fetch(url, {
             method: "PATCH",
             body: JSON.stringify({
@@ -198,11 +198,11 @@ export default function FeedContextProvider({ children }) {
         setState(prevState => {
             return { ...prevState, editLoading: true, loading: true }
         })
-        let url = "http://localhost:5080/feeds/post"
+        let url = "https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/post"
         let method = "post"
 
         if (state.isEditing) {
-            url = `http://localhost:5080/feeds/edit/${state.editPost._id}`;
+            url = `https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/edit/${state.editPost._id}`;
             method = "PUT"
         }
         const formData = new FormData()
@@ -274,7 +274,7 @@ export default function FeedContextProvider({ children }) {
     }
 
     const handleFetchUser = () => {
-        fetch(`http://localhost:5080/auth/${state.user._id}`, {
+        fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/auth/${state.user._id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -323,7 +323,7 @@ export default function FeedContextProvider({ children }) {
                 error.title = "Unauthorised access"
                 throw error
             }
-            const sendLike = await fetch("http://localhost:5080/feeds/likes", {
+            const sendLike = await fetch("https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/likes", {
                 method: "put",
                 body: JSON.stringify({
                     postId: postId,
@@ -359,7 +359,7 @@ export default function FeedContextProvider({ children }) {
             if(followedUserId === state.user._id){
                 return
             }
-            const sendFollowRequest = await fetch("http://localhost:5080/feeds/follow", {
+            const sendFollowRequest = await fetch("https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/follow", {
                 method: "put",
                 body: JSON.stringify({
                     followedUserId: followedUserId,
@@ -390,7 +390,7 @@ export default function FeedContextProvider({ children }) {
                 ...prevState, loading: true
             }
         });
-        fetch(`http://localhost:5080/feeds/delete/${postId}`, {
+        fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/delete/${postId}`, {
             method: "DELETE",
             headers: {
                 "Authorization": "Bearers " + state.token,

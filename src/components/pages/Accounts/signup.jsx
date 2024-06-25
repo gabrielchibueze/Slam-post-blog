@@ -60,7 +60,7 @@ export default function SignupPage() {
         setState(prevState => {
             return { ...prevState, loading: true }
         })
-        fetch("http://localhost:5080/auth/signup", {
+        fetch("https://slam-post-b9f4a39f1f31.herokuapp.com/auth/signup", {
             method: "put",
             body: JSON.stringify({
                 fullname: currentState.userForm.fullname.value,
@@ -136,7 +136,7 @@ export default function SignupPage() {
         <div className="signup-page">
             <div className="signup-intro">
                 <h3>Happy to join SLaM?</h3>
-                <p>Quickly create an account to post your slam and get updates on recent slams</p>
+                <p>Quickly create an account to post your slam and get updates on recent slams.</p>
             </div>
             <div className="signup-form-control">
                 <FormComponent props={{ onSubmit: currentState.formIsValid ? handleSubmitCreateAcount : null }}>

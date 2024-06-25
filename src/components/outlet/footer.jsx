@@ -45,7 +45,7 @@ export default function Footer() {
         setState(prevState => {
             return { ...prevState, loading: true }
         })
-        fetch("http://localhost:5080/enquiry", {
+        fetch("https://slam-post-b9f4a39f1f31.herokuapp.com/enquiry", {
             method: "put",
             body: JSON.stringify({
                 userId: state.user._id || null,

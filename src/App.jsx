@@ -100,7 +100,7 @@ const token = localStorage.getItem("slamUserToken")
 
 
   useEffect(() => {
-    fetch('http://localhost:5080/slam/csrf-token', {
+    fetch('https://slam-post-b9f4a39f1f31.herokuapp.com/slam/csrf-token', {
       credentials: 'include',
     })
       .then(response => response.json())

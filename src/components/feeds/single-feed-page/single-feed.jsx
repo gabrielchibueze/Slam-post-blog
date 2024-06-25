@@ -12,7 +12,7 @@ import ErrorBoundary from "../../error/error";
 import { io } from "socket.io-client";
 import { FeedContext } from "../../feedContextProvider/feedContextProvider";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-const socket = io("http://localhost:5080")
+const socket = io("https://slam-post-b9f4a39f1f31.herokuapp.com")
 
 export default function SingleFeedsPage() {
     const { startEditPostHandler,
@@ -143,7 +143,7 @@ export default function SingleFeedsPage() {
             setState(prevState => {
                 return { ...prevState, postLoading: true }
             });
-            const response = await fetch(`http://localhost:5080/feeds/posts/${postId}`);
+            const response = await fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/posts/${postId}`);
             const data = await response.json();
             if (!data && data.post.length < 1) {
                 throw new Error("Unable to fectch post details")
@@ -152,7 +152,7 @@ export default function SingleFeedsPage() {
             setCurrentState(prevState => {
                 const adjustedPost = {
                     ...data.post,
-                    imageUrl: "http://localhost:5080/" + data.post.imageUrl
+                    imageUrl: "https://slam-post-b9f4a39f1f31.herokuapp.com/" + data.post.imageUrl
                 }
                 return {
                     ...prevState, creatorId: adjustedPost.creator._id, post: [adjustedPost], postLoading: false, postLikes: adjustedPost.likes.length

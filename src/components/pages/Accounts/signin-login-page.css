@@ -9,13 +9,19 @@
 }
 
 .signup-form-control {
-    width: 100%;
+    width: 85%;
     display: flex;
     justify-self: center;
     align-items: center;
 }
+
+@media(max-width: 500px){
+    .signup-form-control{
+        width: 100%;
+    }
+}
 .input-form-classes {
-    width: 100%;
+    width: 93%;
 }
 @media(max-width: 800px) {
     .signup-form-control {

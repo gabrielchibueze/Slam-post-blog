@@ -47,7 +47,7 @@ export default function LoginPage(props) {
         setState(prevState => {
             return { ...prevState, loading: true }
         })
-        fetch("http://localhost:5080/auth/login", {
+        fetch("https://slam-post-b9f4a39f1f31.herokuapp.com/auth/login", {
             method: "put",
             body: JSON.stringify({
                 email: currentState.userForm.email.value,
@@ -118,7 +118,7 @@ export default function LoginPage(props) {
         <div className="signup-page">
             <div className="signup-intro">
                 <h3>Welcome back to SLaM!!</h3>
-                <p>Login into your account to access your slam posts and get recent updates in the SLaM community</p>
+                <p>Login into your account to access your slam posts and get recent updates in the SLaM community.</p>
             </div>
             <div className="signup-form-control">
                 <FormComponent props={{ onsubmit: currentState.formIsValid ? handleSubmitCreateAcount : null }}>
