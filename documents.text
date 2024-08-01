@@ -36,13 +36,13 @@ export default function User() {
 
     const handleFetchThisUser = () => {
      
-        fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/auth/${id}`, {
+        fetch(`http://localhost:8080/auth/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-Token": state.csrfToken
             },
-            credentials: 'include',
+            ,
         }).then(res => {
             if (!res.ok) {
                 const error = new Error("Invalid user details... check if login details are correct");

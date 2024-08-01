@@ -27,10 +27,10 @@ function App() {
     catchError
   } = useContext(FeedContext);
 
-  useEffect(()=>{
+  useEffect(() => {
     handleFetchUser()
-  },[state.follow, state.likes, state.posts, state.user, state.isAuthenticated, state.isEditing, state.loading])
-  
+  }, [state])
+
   useEffect(() => {
     if (state.token && state.user._id) {
       localStorage.setItem("slamUserToken", state.token);
@@ -40,7 +40,7 @@ function App() {
     }
   }, [state.token]);
 
-const token = localStorage.getItem("slamUserToken")
+  const token = localStorage.getItem("slamUserToken")
   useEffect(() => {
     const timeout = setTimeout(() => {
       localStorage.removeItem("slamUserToken");
@@ -64,7 +64,7 @@ const token = localStorage.getItem("slamUserToken")
     return () => clearTimeout(timeout);
   }, [])
 
- 
+
   useEffect(() => {
     const localStorageToken = localStorage.getItem("slamUserToken");
     if (localStorageToken) {
@@ -99,20 +99,18 @@ const token = localStorage.getItem("slamUserToken")
   };
 
 
-  useEffect(() => {
-    fetch('https://slam-post-b9f4a39f1f31.herokuapp.com/slam/csrf-token', {
-      credentials: 'include',
-    })
-      .then(response => response.json())
-      .then(data => {
-        setState(prevState => {
-          return {
-            ...prevState, csrfToken: data.csrfToken
-          }
-        })
-      }
-      ).catch(catchError);
-  }, []);
+  // useEffect(() => {
+  //   fetch('http://localhost:8080/slam/csrf-token')
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       setState(prevState => {
+  //         return {
+  //           ...prevState, csrfToken: data.csrfToken
+  //         }
+  //       })
+  //     }
+  //     ).catch(catchError);
+  // }, []);
 
   return (
     <div className="root-app">

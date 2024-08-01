@@ -166,7 +166,7 @@ export default function FeedTemplate({ props }) {
             <div className="content-section">
                 <Link className="post-links"
                     to={`/feeds/${props.postId}`}>
-                    <img className="source-image" crossOrigin="" src={`https://slam-post-b9f4a39f1f31.herokuapp.com/${props.image}`} />
+                    <img className="source-image" crossOrigin="" src={`http://localhost:8080/${props.image}`} />
                 </Link>
                 <div className="post-section">
                     <Link className="post-links"

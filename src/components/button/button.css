@@ -6,7 +6,12 @@
   align-items: center;
 }
 
-
+.loading-roller {
+  height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .button {
   font: inherit;
   border: 1.5px solid rgba(37, 13, 75, 0.473);

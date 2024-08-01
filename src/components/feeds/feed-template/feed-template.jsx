@@ -7,7 +7,7 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { FeedContext } from "../../feedContextProvider/feedContextProvider";
 
 export default function FeedTemplate({ props }) {
-    const { state, setState, likePost, followUser, catchError } = useContext(FeedContext)
+    const { state, setState, likePost, followUser, emitContent, catchError } = useContext(FeedContext)
     const [currentState, setCurrentState] = useState({
         postLikes: props.likes,
         isLiked: false,
@@ -17,6 +17,18 @@ export default function FeedTemplate({ props }) {
         isFollowing: false,
         likedPostHistory: []
     })
+    // useEffect(() => {
+    //     fetch('http://localhost:8080/slam/csrf-token')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             setState(prevState => {
+    //                 return {
+    //                     ...prevState, csrfToken: data.csrfToken
+    //                 }
+    //             })
+    //         }
+    //         ).catch(catchError);
+    // }, []);
 
     useEffect(() => {
         let usersLikedPost = state.currentUser?.likedPosts
@@ -143,14 +155,14 @@ export default function FeedTemplate({ props }) {
     return <Fragment>
         <div className="slam-feed-section">
             <div className="feed-template__top-section">
-                <Link className="post-links">
+                <div className="post-links">
                     <p className="author-date__section">Slammed by
                         <span className="posted-by">
-                            <Link to={props.creatorId ? `/user/${props.creatorId}` : ""} style={{ color: "rgb(37, 13, 75)", textDecoration: "underline" }}>{props?.creator || "Anonymuous User"}</Link>
+                            <Link to={props.creatorId ? `/user/${props.creatorId}` : ""} style={{ color: "rgb(37, 13, 75)", textDecoration: "underline" }}>{props?.creator|| "Anonymuous User"}</Link>
                         </span>
                         <span className="createdAt-time">on {props?.createdAt || "23/04/2024"}</span>
                     </p>
-                </Link>
+                </div>
                 {state.user?._id !== props.creatorId && <div>
                     {
                         currentState.followings.find(user => user === props.creatorId) || currentState.isFollowing && currentState.creatorId === props.creatorId ?
@@ -166,15 +178,15 @@ export default function FeedTemplate({ props }) {
             <div className="content-section">
                 <Link className="post-links"
                     to={`/feeds/${props.postId}`}>
-                    <img className="source-image" crossOrigin="" src={`https://slam-post-b9f4a39f1f31.herokuapp.com/${props.image}`} />
+                    <img className="source-image" crossOrigin="" src={props.image} />
                 </Link>
                 <div className="post-section">
                     <Link className="post-links"
                         to={`/feeds/${props.postId}`}>
-                        <h2 className="post-title">{props?.title || "Message title"}</h2>
+                        <h2 className="post-title">{emitContent(30, props.title) || "Message title"}</h2>
                     </Link>
                     {
-                        props.content ? <p>{props.content}</p> :
+                        props.content ? <p>{emitContent(45, props.content)}</p> :
                             <p>Message Snippt goes here. This is the message content. Click to view the message details</p>
                     }
                     <div className="buttons__feed-templates">

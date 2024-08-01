@@ -33,16 +33,28 @@ export default function User() {
     const { pathname } = useLocation()
     const { id } = useParams()
 
+    // useEffect(() => {
+    //     fetch('http://localhost:8080/slam/csrf-token')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             setState(prevState => {
+    //                 return {
+    //                     ...prevState, csrfToken: data.csrfToken
+    //                 }
+    //             })
+    //         }
+    //         ).catch(catchError);
+    // }, []);
 
     const handleFetchThisUser = () => {
 
-        fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/auth/${id}`, {
+        fetch(`http://localhost:8080/auth/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-Token": state.csrfToken
             },
-            credentials: 'include',
+            // credentials: 'include',
         }).then(res => {
             if (!res.ok) {
                 const error = new Error("Invalid user details... check if login details are correct");
@@ -90,7 +102,7 @@ export default function User() {
 
     useEffect(() => {
         handleFetchThisUser()
-    }, [currentState.followers, state.likes, state.follow, state.loading, state.isEditing])
+    }, [state, currentState])
 
 
     useEffect(() => {
@@ -102,14 +114,12 @@ export default function User() {
                 }
             })
         }
-    }, [state, currentState])
+    }, [currentState.followers])
 
 
     function handleFollowUser(followOrUnfollow, currentUserId, followedUserId) {
-        setState(prevState => {
-            return { ...prevState, follow: prevState.follow + 1 }
-        })
-
+        console.log(followedUserId)
+        console.log(currentUserId)
         try {
             if (!state.isAuthenticated) {
                 const error = new Error("Please sign in to folow user")
@@ -124,16 +134,18 @@ export default function User() {
                         isFollowed: true, followedUserId: followedUserId
                     }
                 })
+                setState(prevState => {
+                    return { ...prevState, follow: prevState.follow + 1 }
+                })
             }
             if (followOrUnfollow === "unfollow") {
                 setCurrentState(prevState => {
                     return { ...prevState, followers: prevState.followers - 1, isFollowed: false }
                 })
-
+                setState(prevState => {
+                    return { ...prevState, follow: prevState.follow - 1 }
+                })
             }
-            setState(prevState => {
-                return { ...prevState, follow: prevState.follow - 1 }
-            })
         } catch (err) {
             catchError(err)
         }

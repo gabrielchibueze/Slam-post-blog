@@ -45,7 +45,7 @@ export default function Footer() {
         setState(prevState => {
             return { ...prevState, loading: true }
         })
-        fetch("https://slam-post-b9f4a39f1f31.herokuapp.com/enquiry", {
+        fetch("http://localhost:8080/enquiry", {
             method: "put",
             body: JSON.stringify({
                 userId: state.user._id || null,
@@ -57,7 +57,7 @@ export default function Footer() {
                 "Content-Type": "application/json",
                 "X-CSRF-Token": state.csrfToken
             },
-            credentials: "include"
+            // credentials: "include"
         }).then(res => {
             if (!res.ok) {
                 const error = new Error("Error submitting your enquiry, Please try again");

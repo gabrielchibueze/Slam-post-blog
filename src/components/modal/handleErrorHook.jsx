@@ -3,10 +3,10 @@ import { useEffect } from "react";
 export default function HandleErrorsHook(ref, errorHandler) {
     useEffect(() => {
         function activateModalClose(event) {
-            if (ref.current && !event.target.contains(ref.current)) {
+            if (ref?.current && !event.target.contains(ref?.current)) {
                 return
             } 
-            if(ref.current.contains(event.target)){
+            if(ref?.current.contains(event.target)){
                 errorHandler();
             } 
 

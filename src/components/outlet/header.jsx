@@ -48,10 +48,10 @@ export default function Header() {
         })
     }
 
-    function closeMenu(){
+    function closeMenu() {
         setHeaderState(prevState => {
             return { ...prevState, viewMenu: false }
-        })  
+        })
     }
 
     useEffect(() => {
@@ -65,6 +65,20 @@ export default function Header() {
         }
 
         function resizeWindowFunction() {
+            if (window.outerWidth <= 400) {
+                setState(prevSate => {
+                    return { ...prevSate, mobileView: true, miniDesktop: false }
+                })
+            }
+            if (window.outerWidth > 400 && window.outerWidth <= 520) {
+                setState(prevSate => {
+                    return { ...prevSate, mobileView: false, miniDesktop: true }
+                })
+            } if (window.outerWidth > 520) {
+                setState(prevSate => {
+                    return { ...prevSate, mobileView: false, miniDesktop: false }
+                })
+            }
             if (window.outerWidth <= 799) {
                 setHeaderState(prevState => {
                     return { ...prevState, vieMobilewMode: true, viewDesktopMode: false }
@@ -119,7 +133,7 @@ export default function Header() {
                     </div> :
                     <div onClick={toggleMenu} className="toggle-icon">
                         {
-                            headerState.viewMenu ? <h1 style={{color: "whitesmoke"}}><MdOutlineCloseFullscreen /></h1> : <h1 style={{color: "whitesmoke"}}><IoMenu /></h1>
+                            headerState.viewMenu ? <h1 style={{ color: "whitesmoke" }}><MdOutlineCloseFullscreen /></h1> : <h1 style={{ color: "whitesmoke" }}><IoMenu /></h1>
                         }
                     </div>
                 }

@@ -1,10 +1,10 @@
 .slam-feed-section{
     width: 100%;
-    border: 1.5px solid rgb(96, 130, 156);
+    border: 1.5px solid rgba(132, 144, 153, 0.596);
     padding: 0rem 0rem 0rem 0rem;
     box-sizing: 1rem 2rem 4rem;
     background-color: white;
-    box-shadow: 2px 5px 6px rgb(59, 56, 54);
+    box-shadow: 2px 2px 6px #867e79;
     border-radius: 0.1rem;
 }
 
@@ -16,17 +16,14 @@
     font-weight: bold;
 }
 
-/* .posted-by:hover{
-    box-shadow: 3px 1px 8px;
-} */
- 
+
 .post-title {
     margin: 0px;
     font-size: 1.3rem;
 }
 
 .post-links>  p > span {
-    margin: 0.3rem;
+    margin: 0.15rem;
 }
 .post-section > p {
     margin: 0px;

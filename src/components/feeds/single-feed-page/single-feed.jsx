@@ -12,7 +12,7 @@ import ErrorBoundary from "../../error/error";
 import { io } from "socket.io-client";
 import { FeedContext } from "../../feedContextProvider/feedContextProvider";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-const socket = io("https://slam-post-b9f4a39f1f31.herokuapp.com")
+const socket = io("http://localhost:8080")
 
 export default function SingleFeedsPage() {
     const { startEditPostHandler,
@@ -25,7 +25,6 @@ export default function SingleFeedsPage() {
         state,
         likePost,
         createdAt,
-        followUser,
         setState
     } = useContext(FeedContext)
 
@@ -38,13 +37,26 @@ export default function SingleFeedsPage() {
         postLikes: null,
         isLiked: false,
         postId: null,
-        likedPostHistory: [],
-        user: null, likes: null,
-        followedUserId: null,
-        creatorId: null,
-        following: null, followers: null, isFollowed: false, isFollowing: false, followings: null
-
+        likedPostHistory: []
     })
+    // useEffect(() => {
+    //     window.scrollTo({
+    //         top: 0
+    //     })
+    // })
+
+    // useEffect(() => {
+    //     fetch('http://localhost:8080/slam/csrf-token')
+    //       .then(response => response.json())
+    //       .then(data => {
+    //         setState(prevState => {
+    //           return {
+    //             ...prevState, csrfToken: data.csrfToken
+    //           }
+    //         })
+    //       }
+    //       ).catch(catchError);
+    //   }, []);
 
     useEffect(() => {
         let usersLikedPost = state.currentUser?.likedPosts
@@ -61,57 +73,7 @@ export default function SingleFeedsPage() {
                 }
             })
         }
-
-        let usersFollowing = state.currentUser?.following
-        if (state.isAuthenticated) {
-            let checkIsFollowing = []
-            if (usersFollowing && usersFollowing.length > 0) {
-                for (let i = 0; i <= usersFollowing.length; i++) {
-                    checkIsFollowing.push(usersFollowing[i])
-                }
-            }
-            setCurrentState(prevState => {
-                return {
-                    ...prevState, followings: checkIsFollowing
-                }
-            })
-        }
     }, [state])
-
-
-    function handleFollowUser(followOrUnfollow, followedUserId) {
-        try {
-            if (!state.isAuthenticated) {
-                const error = new Error("Please sign in to follow user")
-                error.title = "Unauthorized access"
-                throw error
-            }
-            followUser(followOrUnfollow, followedUserId)
-            if (followOrUnfollow === "follow") {
-                setCurrentState(prevState => {
-                    return {
-                        ...prevState,
-                        isFollowing: true,
-                    }
-                })
-                setState(prevState => {
-                    return { ...prevState, follow: prevState.follow + 1 }
-                })
-            }
-            if (followOrUnfollow === "unfollow") {
-                setCurrentState(prevState => {
-                    return { ...prevState, isFollowing: false }
-                })
-                currentState.followings.pop(followedUserId)
-                setState(prevState => {
-                    return { ...prevState, follow: prevState.follow - 1 }
-                })
-            }
-        } catch (err) {
-            catchError(err)
-        }
-    }
-
 
 
     function clickOnLike(postId, likeOrDislike) {
@@ -143,7 +105,7 @@ export default function SingleFeedsPage() {
             setState(prevState => {
                 return { ...prevState, postLoading: true }
             });
-            const response = await fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/posts/${postId}`);
+            const response = await fetch(`http://localhost:8080/feeds/posts/${postId}`);
             const data = await response.json();
             if (!data && data.post.length < 1) {
                 throw new Error("Unable to fectch post details")
@@ -152,10 +114,10 @@ export default function SingleFeedsPage() {
             setCurrentState(prevState => {
                 const adjustedPost = {
                     ...data.post,
-                    imageUrl: "https://slam-post-b9f4a39f1f31.herokuapp.com/" + data.post.imageUrl
+                    imageUrl: data.post.imageUrl
                 }
                 return {
-                    ...prevState, creatorId: adjustedPost.creator._id, post: [adjustedPost], postLoading: false, postLikes: adjustedPost.likes.length
+                    ...prevState, post: [adjustedPost], postLoading: false, postLikes: adjustedPost.likes.length
                 }
             });
             setState(prevState => {
@@ -187,9 +149,6 @@ export default function SingleFeedsPage() {
     }
 
     useEffect(() => {
-        window.scrollTo({
-            top: 0
-        })
         fetchSinglePost()
     }, [state.isEditing])
 
@@ -208,7 +167,6 @@ export default function SingleFeedsPage() {
     function goBack() {
         navigate(-1)
     }
-
     if (state.postLoading) {
         return <div className="single-post-details__page">
             <Loader />
@@ -220,6 +178,7 @@ export default function SingleFeedsPage() {
             An error occured... please try again
         </p>
     }
+
 
     return <div >
         <ErrorBoundary>
@@ -261,15 +220,6 @@ export default function SingleFeedsPage() {
                                 </div>
                                 <p>{currentState.postLikes} Likes</p>
                             </div>
-                            {postDetail.creator._id !== state.user?._id && <div>
-                                {
-                                    currentState.followings?.length && currentState.followings.find(user => user === postDetail.creator._id) || currentState.isFollowing ?
-                                        <p className="follow__unfollow" onClick={() => handleFollowUser("unfollow", postDetail.creator._id)}>Unfollow</p> :
-                                        <p className="follow__unfollow" onClick={() => handleFollowUser("follow", postDetail.creator._id)}>Follow +</p>
-                                }
-                            </div>
-                            }
-
                             {
                                 state.isAuthenticated && state.user?._id.toString() === postDetail.creator._id.toString() &&
 
@@ -299,7 +249,7 @@ export default function SingleFeedsPage() {
                                 <Link to={`/user/${postDetail.creator._id}`} style={{ color: "rgb(37, 13, 75)", border: "1px solid grey", padding: "0.1rem", marginRight: "4px", marginLeft: "4px", borderRadius: "0.2rem" }}>{postDetail.creator.username || "Anonymuous User"}</Link>
                             </span>
                             on
-                            {" " + createdAt(postDetail.createdAt)}
+                            {createdAt(postDetail.createdAt)}
                         </p>
                         <Link to={postDetail.imageUrl} target="_blank">
                             <img crossOrigin="ananymous" className="single-post__image" src={postDetail.imageUrl} />

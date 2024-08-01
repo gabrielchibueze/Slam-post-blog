@@ -36,7 +36,8 @@ export default function FeedContextProvider({ children }) {
         postsLoading: true,
         itemsPerPage: 5,
         statusCode: "",
-        error: []
+        error: [],
+        mobileView: false, desktopView: false, miniDesktop: false
     });
 
     const addPost = (post) => {
@@ -87,7 +88,7 @@ export default function FeedContextProvider({ children }) {
             })
         }
 
-        fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/posts?limit=${state.itemsPerPage}&page=${state.postPage}`).then(res => {
+        fetch(`http://localhost:8080/feeds/posts?limit=${state.itemsPerPage}&page=${state.postPage}`).then(res => {
             if (!res.ok) {
                 throw new Error("Error occcured fetching post")
             }
@@ -133,7 +134,7 @@ export default function FeedContextProvider({ children }) {
         })
     }
     const statusUpdateHandler = () => {
-        let url = "https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/status"
+        let url = "http://localhost:8080/feeds/status"
         fetch(url, {
             method: "PATCH",
             body: JSON.stringify({
@@ -144,7 +145,7 @@ export default function FeedContextProvider({ children }) {
                 "Authorization": "Bearer " + state.token,
                 "X-CSRF-Token": state.csrfToken
             },
-            credentials: "include"
+            // credentials: "include"
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
@@ -198,17 +199,18 @@ export default function FeedContextProvider({ children }) {
         setState(prevState => {
             return { ...prevState, editLoading: true, loading: true }
         })
-        let url = "https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/post"
+        let url = "http://localhost:8080/feeds/post"
         let method = "post"
 
         if (state.isEditing) {
-            url = `https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/edit/${state.editPost._id}`;
+            url = `http://localhost:8080/feeds/edit/${state.editPost._id}`;
             method = "PUT"
         }
         const formData = new FormData()
         formData.append("title", postData.title);
         formData.append("content", postData.content);
-        formData.append("image", postData.image);
+        formData.append("image", postData.base64Image);
+
         fetch(url, {
             method: method,
             body: formData,
@@ -216,9 +218,9 @@ export default function FeedContextProvider({ children }) {
                 "Authorization": "Bearers " + state.token,
                 "X-CSRF-Token": state.csrfToken
             },
-            credentials: "include"
+            // credentials: "include"
         }).then(res => {
-            if (!res.ok) {
+            if (!res.OK) {
                 throw new Error("Failed to create/update post", res.status)
             }
             return res.json()
@@ -231,6 +233,7 @@ export default function FeedContextProvider({ children }) {
                 content: resData.post.content,
                 imageUrl: resData.post.imageUrl
             }
+
             setState(prevState => {
                 // let updatedPost = prevState.posts ? [...prevState.posts] : []
 
@@ -253,7 +256,6 @@ export default function FeedContextProvider({ children }) {
                 }
             })
         }).catch(err => {
-            catchError(err)
             setState({
                 isEditing: false,
                 loading: false,
@@ -274,13 +276,16 @@ export default function FeedContextProvider({ children }) {
     }
 
     const handleFetchUser = () => {
-        fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/auth/${state.user._id}`, {
+        if (!state.user?._id) {
+            return
+        }
+        fetch(`http://localhost:8080/auth/${state.user?._id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-Token": state.csrfToken
             },
-            credentials: 'include',
+            // credentials: 'include',
         }).then(res => {
             if (!res.ok) {
                 return
@@ -292,7 +297,6 @@ export default function FeedContextProvider({ children }) {
             })
         }).catch(catchError)
     }
-
     const createdAt = (dateString) => {
         const nDate = new Date(dateString)
         const month = nDate.getMonth()
@@ -301,13 +305,28 @@ export default function FeedContextProvider({ children }) {
         const minute = nDate.getMinutes()
         const date = nDate.getDate()
         let timeZone;
-        if(hour < 12 && hour ){
+        if (hour < 12 && hour) {
             timeZone = "AM"
         } else {
             timeZone = "PM"
         }
         return date + "/" + month + "/" + fullYear + "  " + hour + ":" + minute + " " + timeZone
     }
+
+    const emitContent = (contentLength, content) => {
+        let newContent;
+        if (state.mobileView && content.length > contentLength) {
+            newContent = content.slice(0, contentLength)
+            return newContent + "..."
+        }
+        if (state.miniDesktop && content.length > contentLength + 12) {
+            newContent = content.slice(0, contentLength + 12)
+            return newContent + "..."
+        }
+        return content
+    }
+
+
     const likePost = async (postId, likeOrDislike) => {
 
         let postLike;
@@ -323,14 +342,14 @@ export default function FeedContextProvider({ children }) {
                 error.title = "Unauthorised access"
                 throw error
             }
-            const sendLike = await fetch("https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/likes", {
+            const sendLike = await fetch("http://localhost:8080/feeds/likes", {
                 method: "put",
                 body: JSON.stringify({
                     postId: postId,
                     postLike: `${postLike}`,
                     userId: state.user._id
                 }),
-                credentials: "include",
+                // credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "bearer " + state.token,
@@ -356,17 +375,17 @@ export default function FeedContextProvider({ children }) {
                 error.title = "Unauthorised access"
                 throw error
             }
-            if(followedUserId === state.user._id){
+            if (followedUserId === state.user._id) {
                 return
             }
-            const sendFollowRequest = await fetch("https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/follow", {
+            const sendFollowRequest = await fetch("http://localhost:8080/feeds/follow", {
                 method: "put",
                 body: JSON.stringify({
                     followedUserId: followedUserId,
                     followOrUnfollow: followOrUnfollow,
                     userId: state.user._id
                 }),
-                credentials: "include",
+                // credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "bearer " + state.token,
@@ -374,6 +393,7 @@ export default function FeedContextProvider({ children }) {
                 }
             })
             const response = await sendFollowRequest.json()
+            console.log(response)
             if (!response.ok) {
                 const error = new Error("Couldn't complete follow operation")
                 error.title = "Processing error"
@@ -383,20 +403,20 @@ export default function FeedContextProvider({ children }) {
             catchError(err)
         }
     }
-
+    // console.log(state.csrfToken)
     const deletePostHandler = (postId) => {
         setState(prevState => {
             return {
                 ...prevState, loading: true
             }
         });
-        fetch(`https://slam-post-b9f4a39f1f31.herokuapp.com/feeds/delete/${postId}`, {
+        fetch(`http://localhost:8080/feeds/delete/${postId}`, {
             method: "DELETE",
             headers: {
                 "Authorization": "Bearers " + state.token,
                 "X-CSRF-Token": state.csrfToken
             },
-            credentials: "include"
+            // credentials: "include"
         }).then(res => {
             if (!res.ok) {
                 throw new Error("Deleting a post failed")
@@ -456,6 +476,7 @@ export default function FeedContextProvider({ children }) {
         handleFetchUser,
         createdAt,
         followUser,
+        emitContent,
         state,
         setState
     }

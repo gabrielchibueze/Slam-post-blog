@@ -42,12 +42,27 @@ export default function LoginPage(props) {
     })
     const navigate = useNavigate()
 
+    // useEffect(() => {
+    //     fetch('http://localhost:8080/slam/csrf-token')
+    //       .then(response => response.json())
+    //       .then(data => {
+    //         setState(prevState => {
+    //           return {
+    //             ...prevState, csrfToken: data.csrfToken
+    //           }
+    //         })
+    //       }
+    //       ).catch(catchError);
+    //   }, []);
+    //   console.log(state.csrfToken)
+
     const handleSubmitCreateAcount = (event) => {
         event.preventDefault();
         setState(prevState => {
             return { ...prevState, loading: true }
         })
-        fetch("https://slam-post-b9f4a39f1f31.herokuapp.com/auth/login", {
+
+        fetch("http://localhost:8080/auth/login", {
             method: "put",
             body: JSON.stringify({
                 email: currentState.userForm.email.value,
@@ -57,11 +72,12 @@ export default function LoginPage(props) {
                 "Content-Type": "application/json",
                 "X-CSRF-Token": state.csrfToken
             },
-            credentials: 'include',
+            // credentials: 'include',
         }).then(res => {
+            console.log(res)
             if (!res.ok) {
                 const error = new Error("Invalid login details... check if login details are correct");
-                error.title = "Login error"
+                error.title = "Login error" + " - " + res?.statusText
                 navigate("/login")
                 throw error;
             }
@@ -117,8 +133,8 @@ export default function LoginPage(props) {
     return <div className="accounts-page">
         <div className="signup-page">
             <div className="signup-intro">
-                <h3>Welcome back to SLaM!!</h3>
-                <p>Login into your account to access your slam posts and get recent updates in the SLaM community.</p>
+                <h2>Welcome back to SLaM!!</h2>
+                <p>Login into your account to access your slam posts and get recent updates in the SLaM community</p>
             </div>
             <div className="signup-form-control">
                 <FormComponent props={{ onsubmit: currentState.formIsValid ? handleSubmitCreateAcount : null }}>

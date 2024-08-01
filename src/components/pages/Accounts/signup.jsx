@@ -53,6 +53,20 @@ export default function SignupPage() {
             top: 0
         })
     }, [])
+    
+    // useEffect(() => {
+    //     fetch('http://localhost:8080/slam/csrf-token')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             setState(prevState => {
+    //                 return {
+    //                     ...prevState, csrfToken: data.csrfToken
+    //                 }
+    //             })
+    //         }
+    //         ).catch(catchError);
+    // }, []);
+
     const navigate = useNavigate()
 
     const handleSubmitCreateAcount = (event) => {
@@ -60,7 +74,7 @@ export default function SignupPage() {
         setState(prevState => {
             return { ...prevState, loading: true }
         })
-        fetch("https://slam-post-b9f4a39f1f31.herokuapp.com/auth/signup", {
+        fetch("http://localhost:8080/auth/signup", {
             method: "put",
             body: JSON.stringify({
                 fullname: currentState.userForm.fullname.value,
@@ -72,7 +86,7 @@ export default function SignupPage() {
                 "Content-Type": "application/json",
                 "X-CSRF-Token": state.csrfToken
             },
-            credentials: "include"
+            // credentials: "include"
         }).then(res => {
             if (!res.ok) {
                 const error = new Error("Error occured creating user account, Check if email is not already registered");
@@ -135,8 +149,8 @@ export default function SignupPage() {
     return <div className="accounts-page">
         <div className="signup-page">
             <div className="signup-intro">
-                <h3>Happy to join SLaM?</h3>
-                <p>Quickly create an account to post your slam and get updates on recent slams.</p>
+                <h2>Happy to join SLaM?</h2>
+                <p>Quickly create an account to post your slam and get updates on recent slams</p>
             </div>
             <div className="signup-form-control">
                 <FormComponent props={{ onSubmit: currentState.formIsValid ? handleSubmitCreateAcount : null }}>

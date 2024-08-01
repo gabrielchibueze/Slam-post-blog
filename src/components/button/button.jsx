@@ -16,7 +16,7 @@ export default function ButtonComponent({ props }) {
                     className={
                         ['button', `button--${props.design}`, `buttton--${props.mode}`].join(" ")
                     }>
-                    {props.loading ? <p ><Loader /></p> : props.title}
+                    {props.loading ? < div className="loading-roller"><Loader /></div> : props.title}
                 </button>)
                 :
                 (<Link

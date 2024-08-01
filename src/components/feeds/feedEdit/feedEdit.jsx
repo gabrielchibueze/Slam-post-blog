@@ -17,7 +17,6 @@ import ButtonComponent from "../../button/button";
 
 
 const FeedEdit = ({ props }) => {
-
     const POST_FORM = {
         title: {
             value: props.statusInput || "",
@@ -38,13 +37,26 @@ const FeedEdit = ({ props }) => {
             validators: [required, length({ min: 7 })]
         }
     };
-    const { state } = useContext(FeedContext)
+    const { state, setState, catchError } = useContext(FeedContext)
     const [currentState, setCurrentState] = useState({
+        base64Image: null,
         postForm: POST_FORM,
         formIsValid: false,
         imagePreview: null,
         cancelRequest: false
     });
+    // useEffect(() => {
+    //     fetch('http://localhost:8080/slam/csrf-token')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             setState(prevState => {
+    //                 return {
+    //                     ...prevState, csrfToken: data.csrfToken
+    //                 }
+    //             })
+    //         }
+    //         ).catch(catchError);
+    // }, []);
 
     useEffect(() => {
         if (props.selectedPost && props.isEditing) {
@@ -93,7 +105,7 @@ const FeedEdit = ({ props }) => {
         if (files) {
             generateBase64FromImage(files[0]).then(B64 => {
                 setCurrentState(prevState => {
-                    return { ...prevState, imagePreview: B64 }
+                    return { ...prevState, base64Image: B64, imagePreview: B64 }
                 })
             }).catch(err => {
                 setCurrentState(prevState => {
@@ -158,7 +170,8 @@ const FeedEdit = ({ props }) => {
         const post = {
             title: currentState.postForm.title.value,
             image: currentState.postForm.image.value,
-            content: currentState.postForm.content.value
+            content: currentState.postForm.content.value,
+            base64Image: currentState.base64Image
         }
         props.finishedEditHandler(post)
         setCurrentState(prevState => {
@@ -176,7 +189,7 @@ const FeedEdit = ({ props }) => {
             <div className="feed-edit-popup">
                 <FormComponent props={{ onSubmit: acceptPostChangeHandler }} >
                     {
-                        !props.isAuthenticated && <div className="signup-prompt" style={{display: "flex", gap: "1rem", margin: "1rem auto 0rem auto"}}>
+                        !props.isAuthenticated && <div className="signup-prompt" style={{ display: "flex", gap: "1rem", margin: "1rem auto 0rem auto" }}>
                             <p className="creat-post-reminder__authentication">You need to be signed in to create a post</p>
                             <Link to="/login">
                                 <ButtonComponent props={{

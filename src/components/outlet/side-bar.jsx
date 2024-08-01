@@ -1,5 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useContext } from "react";
+import {
+    useContext,
+    // useEffect
+} from "react";
 import MultiButtonComponent from "../button/multiButtonComponent";
 import FeedEdit from "../feeds/feedEdit/feedEdit";
 import InputComponent from "../input/input-component";
@@ -8,7 +11,24 @@ import { RiRadioButtonLine } from "react-icons/ri";
 
 export default function SideBar({ props }) {
 
-    const { state } = useContext(FeedContext)
+    const { state,
+        //  setState, catchError 
+    } = useContext(FeedContext)
+
+    // useEffect(() => {
+    //     fetch('http://localhost:8080/slam/csrf-token')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             setState(prevState => {
+    //                 return {
+    //                     ...prevState, csrfToken: data.csrfToken
+    //                 }
+    //             })
+    //         }
+    //         ).catch(catchError);
+    // }, []);
+
+
     return (
         <div className="side-bar-section">
             {props.isCreateNewPost && <FeedEdit props={{
@@ -32,7 +52,7 @@ export default function SideBar({ props }) {
                         onChange: props.statusInputChangeHandler
                     }} />
                 </div>
-                <div style={{width: "100%", textAlign: "center", display: "flex", justifyContent: "center", marginTop: "0.2rem"}}>
+                <div style={{ width: "100%", textAlign: "center", display: "flex", justifyContent: "center", marginTop: "0.2rem" }}>
                     <MultiButtonComponent props={{
                         buttonProperties: [
                             {
