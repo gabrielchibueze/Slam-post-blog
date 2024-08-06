@@ -15,7 +15,7 @@ export default function RecentFeeds (){
 // import ErrorBoundary from "../../error/error";
 // import { FeedContext } from "../../feedContextProvider/feedContextProvider";
 // import "../all-feed/all-feed.css"
-// const socket = io("http://localhost:8080");
+// const socket = io("https://slampost-8dd6d1d06367.herokuapp.com");
 
 
 // const RecentFeeds = () => {

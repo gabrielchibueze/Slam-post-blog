@@ -55,7 +55,7 @@ export default function SignupPage() {
     }, [])
     
     // useEffect(() => {
-    //     fetch('http://localhost:8080/slam/csrf-token')
+    //     fetch('https://slampost-8dd6d1d06367.herokuapp.com/slam/csrf-token')
     //         .then(response => response.json())
     //         .then(data => {
     //             setState(prevState => {
@@ -74,7 +74,7 @@ export default function SignupPage() {
         setState(prevState => {
             return { ...prevState, loading: true }
         })
-        fetch("http://localhost:8080/auth/signup", {
+        fetch("https://slampost-8dd6d1d06367.herokuapp.com/auth/signup", {
             method: "put",
             body: JSON.stringify({
                 fullname: currentState.userForm.fullname.value,

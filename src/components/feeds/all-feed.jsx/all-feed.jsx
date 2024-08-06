@@ -11,7 +11,7 @@ import ErrorCanfirmPopup from "../../errorCanfirmPopup/errorCanfirmPopup";
 import ErrorBoundary from "../../error/error";
 import { FeedContext } from "../../feedContextProvider/feedContextProvider";
 import "./all-feed.css"
-const socket = io("http://localhost:8080");
+const socket = io("https://slampost-8dd6d1d06367.herokuapp.com");
 
 
 const AllFeedsPage = (props) => {
@@ -40,7 +40,7 @@ const AllFeedsPage = (props) => {
     }, [])
     
     // useEffect(() => {
-    //     fetch('http://localhost:8080/slam/csrf-token')
+    //     fetch('https://slampost-8dd6d1d06367.herokuapp.com/slam/csrf-token')
     //         .then(response => response.json())
     //         .then(data => {
     //             setState(prevState => {
