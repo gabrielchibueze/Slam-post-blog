@@ -174,7 +174,7 @@ export default function FeedTemplate({ props }) {
                             </h2>
                     </Link>
                     {
-                        props.content ? <p>{emitContent(32, props.content)}</p> :
+                        props.content ? <p>{emitContent(40, props.content)}</p> :
                             <p>Message Snippt goes here. This is the message content. Click to view the message details</p>
                     }
                     <div className="buttons__feed-templates">

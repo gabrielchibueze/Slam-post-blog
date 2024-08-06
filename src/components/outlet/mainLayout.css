@@ -72,11 +72,13 @@ header>a>h1 {
     font: bolder;
     font-size: 1.5rem;
 }
-
+.mobile-view__mode>a {
+    font-size: 1.2rem;
+}
 .mobile-view__mode {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
     background-color: #03045e;
     height: 100vh;
     top: 100px;
