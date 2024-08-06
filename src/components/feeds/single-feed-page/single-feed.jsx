@@ -43,7 +43,7 @@ export default function SingleFeedsPage() {
         window.scrollTo({
             top: 0
         })
-    })
+    }, [])
 
     // useEffect(() => {
     //     fetch('https://slampost-8dd6d1d06367.herokuapp.com/slam/csrf-token')
@@ -248,8 +248,8 @@ export default function SingleFeedsPage() {
                             <span className="posted-by">
                                 <Link to={`/user/${postDetail.creator._id}`} style={{ color: "rgb(37, 13, 75)", border: "1px solid grey", padding: "0.1rem", marginRight: "4px", marginLeft: "4px", borderRadius: "0.2rem" }}>{postDetail.creator.username || "Anonymuous User"}</Link>
                             </span>
-                            on 
-                            { " " + createdAt(postDetail.createdAt)}
+                            on
+                            {" " + createdAt(postDetail.createdAt)}
                         </p>
                         <Link to={postDetail.imageUrl} target="_blank">
                             <img crossOrigin="ananymous" className="single-post__image" src={postDetail.imageUrl} />
