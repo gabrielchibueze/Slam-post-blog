@@ -109,16 +109,28 @@ export default function Header() {
                         design: "magnified"
                     }} />
                 </div> :
-                <Link to="/login">
-                    <ButtonComponent props={{
-                        type: `button`,
-                        title: `Login`,
-                        link: null,
-                        onClick: null,
-                        mode: "success",
-                        design: "graceful"
-                    }} />
-                </Link>
+                <div className="signup__and__login">
+                    <Link to="/login">
+                        <ButtonComponent props={{
+                            type: `button`,
+                            title: `Login`,
+                            link: null,
+                            onClick: null,
+                            mode: "success",
+                            design: "graceful"
+                        }} />
+                    </Link>
+                    {!state.isAuthenticated && <Link to="/signup">
+                        <ButtonComponent props={{
+                            type: `button`,
+                            title: `Sign up`,
+                            link: null,
+                            onClick: null,
+                            mode: "success",
+                            design: "magnified"
+                        }} />
+                    </Link>}
+                </div>
         }
     </div>
     return (

@@ -83,22 +83,7 @@ export default function FeedTemplate({ props }) {
         }
     }
 
-    useEffect(() => {
-        let usersLikedPost = state.currentUser?.likedPosts
-        if (state.isAuthenticated) {
-            let usersAllLiked = [];
-            if (usersLikedPost && usersLikedPost.length > 0) {
-                for (let i = 0; i <= usersLikedPost.length; i++) {
-                    usersAllLiked.push(usersLikedPost[i])
-                }
-            }
-            setCurrentState(prevState => {
-                return {
-                    ...prevState, likedPostHistory: usersAllLiked
-                }
-            })
-        }
-    }, [state])
+    
     useEffect(() => {
         let usersFollowing = state.currentUser?.following
         if (state.isAuthenticated) {
@@ -183,10 +168,13 @@ export default function FeedTemplate({ props }) {
                 <div className="post-section">
                     <Link className="post-links"
                         to={`/feeds/${props.postId}`}>
-                        <h2 className="post-title">{emitContent(30, props.title) || "Message title"}</h2>
+                        <h2 className="post-title">
+                            {/* {emitContent(20, props.title) || "Message title"} */}
+                            {(props.title) || "Message title"}
+                            </h2>
                     </Link>
                     {
-                        props.content ? <p>{emitContent(45, props.content)}</p> :
+                        props.content ? <p>{emitContent(32, props.content)}</p> :
                             <p>Message Snippt goes here. This is the message content. Click to view the message details</p>
                     }
                     <div className="buttons__feed-templates">

@@ -92,3 +92,17 @@
         display: none;
     }
 }
+.current-user-status {
+    padding: 0rem;
+    margin: 0px auto;
+    text-align: center;
+    /* background-color: #03055e98; */
+    border: 1px solid #03055e98;
+    border-radius: 0.4rem;
+    margin-bottom: 0.8rem;
+    width: fit-content;
+}
+.current-user-status > p{
+    margin: 0.2rem 1rem;
+    max-width: 300px;
+}

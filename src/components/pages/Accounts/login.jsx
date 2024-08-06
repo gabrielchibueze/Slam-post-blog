@@ -74,10 +74,9 @@ export default function LoginPage(props) {
             },
             // credentials: 'include',
         }).then(res => {
-            console.log(res)
             if (!res.ok) {
                 const error = new Error("Invalid login details... check if login details are correct");
-                error.title = "Login error" + " - " + res?.statusText
+                error.title = "Login error"
                 navigate("/login")
                 throw error;
             }

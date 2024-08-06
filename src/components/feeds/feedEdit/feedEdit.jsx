@@ -40,11 +40,12 @@ const FeedEdit = ({ props }) => {
     const { state, setState, catchError } = useContext(FeedContext)
     const [currentState, setCurrentState] = useState({
         base64Image: null,
+        oldImageValue: null,
         postForm: POST_FORM,
         formIsValid: false,
-        imagePreview: null,
         cancelRequest: false
     });
+
     // useEffect(() => {
     //     fetch('http://localhost:8080/slam/csrf-token')
     //         .then(response => response.json())
@@ -70,7 +71,7 @@ const FeedEdit = ({ props }) => {
                     image: {
                         ...prevState.postForm.image,
                         value: props.selectedPost.imageUrl,
-                        valid: true
+                        valid: true,
                     },
                     content: {
                         ...prevState.postForm.content,
@@ -78,7 +79,7 @@ const FeedEdit = ({ props }) => {
                         valid: true
                     }
                 }
-                return { postForm: upDatePostForm, formIsValid: true }
+                return { postForm: upDatePostForm, oldImageValue: props.selectedPost.imageUrl, formIsValid: true }
             })
         } else if (props.isCreateNewPost) {
             setCurrentState({ postForm: POST_FORM })
@@ -105,11 +106,11 @@ const FeedEdit = ({ props }) => {
         if (files) {
             generateBase64FromImage(files[0]).then(B64 => {
                 setCurrentState(prevState => {
-                    return { ...prevState, base64Image: B64, imagePreview: B64 }
+                    return { ...prevState, base64Image: B64 }
                 })
             }).catch(err => {
                 setCurrentState(prevState => {
-                    return { ...prevState, imagePreview: null }
+                    return { ...prevState, base64Image: null }
                 })
             })
         }
@@ -159,7 +160,7 @@ const FeedEdit = ({ props }) => {
                 ...prevState,
                 postForm: POST_FORM,
                 formIsValid: false,
-                imagePreview: null
+                base64Image: null
             }
         })
         props.cancelEditPostHandler()
@@ -170,18 +171,19 @@ const FeedEdit = ({ props }) => {
         const post = {
             title: currentState.postForm.title.value,
             image: currentState.postForm.image.value,
+            oldImageValue: currentState.oldImageValue,
             content: currentState.postForm.content.value,
             base64Image: currentState.base64Image
         }
         props.finishedEditHandler(post)
-        setCurrentState(prevState => {
-            return {
-                ...prevState,
-                postForm: POST_FORM,
-                formIsValid: false,
-                imagePreview: null
-            }
-        })
+        // setCurrentState(prevState => {
+        //     return {
+        //         ...prevState,
+        //         postForm: POST_FORM,
+        //         formIsValid: false,
+        //         base64Image: null
+        //     }
+        // })
     }
 
     return <Fragment>
@@ -233,10 +235,10 @@ const FeedEdit = ({ props }) => {
                     }} />
                     <div className="new-post__image-preview">
                         {
-                            !currentState.imagePreview && <p>Select file to preview</p>
+                            !currentState.base64Image && <p>Select file to preview</p>
                         }
                         {
-                            currentState.imagePreview && <ImagePreview props={{ imageURL: currentState.imagePreview }} contain left />
+                            currentState.base64Image && <ImagePreview props={{ imageURL: currentState.base64Image }} contain left />
                         }
                     </div>
                     <InputComponent props={{

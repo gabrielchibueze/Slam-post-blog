@@ -4,7 +4,7 @@ import {
     useParams
 } from "react-router-dom"
 import "./user.css"
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { FeedContext } from "../../feedContextProvider/feedContextProvider"
 import SideBar from "../../outlet/side-bar"
 import ErrorCanfirmPopup from "../../errorCanfirmPopup/errorCanfirmPopup"
@@ -117,7 +117,7 @@ export default function User() {
     }, [currentState.followers])
 
 
-    function handleFollowUser(followOrUnfollow, currentUserId, followedUserId) {
+    const handleFollowUser = useCallback((followOrUnfollow, currentUserId, followedUserId) => {
         console.log(followedUserId)
         console.log(currentUserId)
         try {
@@ -149,7 +149,7 @@ export default function User() {
         } catch (err) {
             catchError(err)
         }
-    }
+    })
 
     return <div className="displayed-outlet">
         {currentState.loading ? <div style={{ textAlign: "center" }}>
@@ -194,6 +194,10 @@ export default function User() {
                         }} />
                 }
                 <div className="user-profile">
+                    {currentState.user?.status && currentState.user.status.length !== 0 && <div className="current-user-status">
+                        <p>User Status: {currentState.user?.status}</p>
+                    </div>}
+
                     <div className="user-profile__top-section">
                         <div className="main-user__top-section">
                             <div className="user-personal__section">

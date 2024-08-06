@@ -50,7 +50,7 @@ function App() {
       setState((prevState) => ({
         ...prevState,
         isAuthenticated: false,
-        userStatus: null,
+        userStatus: "",
         user: {
           ...prevState.user,
           _id: null,
@@ -71,10 +71,11 @@ function App() {
       const localStorageUsername = localStorage.getItem("slamUsername");
       const localStorageUserId = localStorage.getItem("slamUserId");
       const localStorageUserStatus = localStorage.getItem("slamUserStatus");
+      console.log(localStorageUserStatus)
       setState((prevState) => ({
         ...prevState,
         isAuthenticated: true,
-        userStatus: localStorageUserStatus,
+        userStatus: localStorageUserStatus === undefined ? "" : localStorageUserStatus,
         user: {
           ...prevState.user,
           _id: localStorageUserId,

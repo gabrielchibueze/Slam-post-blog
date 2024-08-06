@@ -134,35 +134,47 @@ export default function FeedContextProvider({ children }) {
         })
     }
     const statusUpdateHandler = () => {
-        let url = "http://localhost:8080/feeds/status"
-        fetch(url, {
-            method: "PATCH",
-            body: JSON.stringify({
-                status: state.statusInput
-            }),
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + state.token,
-                "X-CSRF-Token": state.csrfToken
-            },
-            // credentials: "include"
-        })
-            .then(res => {
-                if (res.status !== 200 && res.status !== 201) {
-                    const error = new Error("Error occured updating user status");
-                    error.status = res.status
-                    throw error
-                }
-                return res.json()
+        try {
+            if (!state.isAuthenticated) {
+                console.log(state.isAuthenticated)
+                const error = new Error("Sign in to update and view status")
+                error.title = "Unautorized access"
+                throw error
+            }
+            let url = "http://localhost:8080/feeds/status"
+            fetch(url, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    status: state.statusInput
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + state.token,
+                    "X-CSRF-Token": state.csrfToken
+                },
+                // credentials: "include"
             })
-            .then(resData => {
-                localStorage.setItem("slamUserStatus", resData.status)
-                setState(prevState => {
-                    return {
-                        ...prevState, userStatus: resData.status, statusInput: ""
+                .then(res => {
+                    if (res.status !== 200 && res.status !== 201) {
+                        const error = new Error("Error occured updating user status");
+                        error.status = res.status
+                        throw error
                     }
+                    return res.json()
                 })
-            }).catch(catchError)
+                .then(resData => {
+                    localStorage.setItem("slamUserStatus", resData.status)
+                    setState(prevState => {
+                        return {
+                            ...prevState, userStatus: resData.status, statusInput: ""
+                        }
+                    })
+                }).catch(catchError)
+
+        } catch (err) {
+            catchError(err)
+        }
+
     }
 
     const createNewPost = () => {
@@ -207,9 +219,11 @@ export default function FeedContextProvider({ children }) {
             method = "PUT"
         }
         const formData = new FormData()
+        console.log(postData)
         formData.append("title", postData.title);
         formData.append("content", postData.content);
         formData.append("image", postData.base64Image);
+        if (state.isEditing) formData.append("oldimage", postData.oldImageValue)
 
         fetch(url, {
             method: method,
@@ -220,7 +234,7 @@ export default function FeedContextProvider({ children }) {
             },
             // credentials: "include"
         }).then(res => {
-            if (!res.OK) {
+            if (!res.oK) {
                 throw new Error("Failed to create/update post", res.status)
             }
             return res.json()
@@ -319,8 +333,12 @@ export default function FeedContextProvider({ children }) {
             newContent = content.slice(0, contentLength)
             return newContent + "..."
         }
-        if (state.miniDesktop && content.length > contentLength + 12) {
-            newContent = content.slice(0, contentLength + 12)
+        if (state.miniDesktop && content.length > contentLength + 93) {
+            newContent = content.slice(0, contentLength + 93)
+            return newContent + "..."
+        }
+        else if (!state.miniDesktop && !state.mobileView && content.length > contentLength + 240) {
+            newContent = content.slice(0, contentLength + 240)
             return newContent + "..."
         }
         return content
@@ -393,7 +411,6 @@ export default function FeedContextProvider({ children }) {
                 }
             })
             const response = await sendFollowRequest.json()
-            console.log(response)
             if (!response.ok) {
                 const error = new Error("Couldn't complete follow operation")
                 error.title = "Processing error"
@@ -403,7 +420,6 @@ export default function FeedContextProvider({ children }) {
             catchError(err)
         }
     }
-    // console.log(state.csrfToken)
     const deletePostHandler = (postId) => {
         setState(prevState => {
             return {

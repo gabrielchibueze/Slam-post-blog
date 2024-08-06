@@ -66,7 +66,7 @@ export default function SideBar({ props }) {
                 {state.isAuthenticated ?
                     <div className="user-status">
                         <h3>Status: <span className="active-indicator"><RiRadioButtonLine /></span>{state.isAuthenticated && " Online"}</h3>
-                        <p>{state.user.status || state.userStatus || "No user status"}</p>
+                        {state.userStatus === "undefined" || state.userStatus === "null" ? <p>No user status</p> : <p>{state.user.status || state.userStatus}</p>}
                     </div> :
                     <div className="user-status">
                         <h3>Status: <span className="active-indicator offline-indicator"><RiRadioButtonLine /></span>{!state.isAuthenticated && " Offline"}</h3>
@@ -74,6 +74,6 @@ export default function SideBar({ props }) {
                     </div>
                 }
             </div>
-        </div>
+        </div >
     )
 }

@@ -505,3 +505,10 @@ footer {
 .follow__unfollow:hover, .follow__unfollow:active, .follow__unfollow:focus{
     box-shadow: 3px 1px 8px;
 }
+@media(min-width: 600px){
+    .signup__and__login{
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 1rem;
+    }
+}
