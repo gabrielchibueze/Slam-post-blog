@@ -17,14 +17,18 @@
 }
 
 .user-profile__photo {
-    width: 95px;
+    width: 90px;
     height: 80px;
     border-radius: 50%;
     border: 0.2px solid #03055e98;
 }
+.avatar {
+    border: none;
+}
 .user-personal__section {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 1rem
 }
 .user-activities {
@@ -44,6 +48,7 @@
     display: flex;
     flex-direction: column;
     gap: 0px;
+    margin-top: -0.9rem;
 }
 .user-personal__details > h2, .user-personal__details > p {
     margin: 0px;

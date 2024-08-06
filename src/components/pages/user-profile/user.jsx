@@ -10,7 +10,6 @@ import SideBar from "../../outlet/side-bar"
 import ErrorCanfirmPopup from "../../errorCanfirmPopup/errorCanfirmPopup"
 import FeedEdit from "../../feeds/feedEdit/feedEdit"
 import Loader from "../../loader/loader"
-
 export default function User() {
     const { cancelEditPostHandler,
         finishedEditHandler,
@@ -201,7 +200,10 @@ export default function User() {
                     <div className="user-profile__top-section">
                         <div className="main-user__top-section">
                             <div className="user-personal__section">
-                                <img src={`${currentState.user?.photo || "/gabriel5.jpeg"}`} className="user-profile__photo" />
+                                <div>
+                                    {currentState.user?.photo ? <img src={`${currentState.user.photo}`} className="user-profile__photo" /> : <img src={"/avataricon.png"} className="user-profile__photo avatar" />}
+                                </div>
+
                                 <div className="user-personal__details">
                                     {state.isAuthenticated && id === state.user?._id && <h2>{currentState.user?.fullname}</h2>}
                                     <p className={id != state.user?._id ? "bolden" : ""}>@{currentState.user?.username.split()[0].toLowerCase()}</p>
