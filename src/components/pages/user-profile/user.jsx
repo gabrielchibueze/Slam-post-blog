@@ -34,7 +34,7 @@ export default function User() {
     const { id } = useParams()
 
     // useEffect(() => {
-    //     fetch('http://localhost:8080/slam/csrf-token')
+    //     fetch('https://slampost-8dd6d1d06367.herokuapp.com/slam/csrf-token')
     //         .then(response => response.json())
     //         .then(data => {
     //             setState(prevState => {
@@ -48,7 +48,7 @@ export default function User() {
 
     const handleFetchThisUser = () => {
 
-        fetch(`http://localhost:8080/auth/${id}`, {
+        fetch(`https://slampost-8dd6d1d06367.herokuapp.com/auth/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

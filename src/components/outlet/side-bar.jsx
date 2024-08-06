@@ -16,7 +16,7 @@ export default function SideBar({ props }) {
     } = useContext(FeedContext)
 
     // useEffect(() => {
-    //     fetch('http://localhost:8080/slam/csrf-token')
+    //     fetch('https://slampost-8dd6d1d06367.herokuapp.com/slam/csrf-token')
     //         .then(response => response.json())
     //         .then(data => {
     //             setState(prevState => {
