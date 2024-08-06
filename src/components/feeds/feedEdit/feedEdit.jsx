@@ -47,7 +47,7 @@ const FeedEdit = ({ props }) => {
     });
 
     // useEffect(() => {
-    //     fetch('https://slampost-8dd6d1d06367.herokuapp.com/slam/csrf-token')
+    //     fetch('http://localhost:8080/slam/csrf-token')
     //         .then(response => response.json())
     //         .then(data => {
     //             setState(prevState => {

@@ -12,7 +12,7 @@ import ErrorBoundary from "../../error/error";
 import { io } from "socket.io-client";
 import { FeedContext } from "../../feedContextProvider/feedContextProvider";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-const socket = io("https://slampost-8dd6d1d06367.herokuapp.com")
+const socket = io("http://localhost:8080")
 
 export default function SingleFeedsPage() {
     const { startEditPostHandler,
@@ -46,7 +46,7 @@ export default function SingleFeedsPage() {
     // })
 
     // useEffect(() => {
-    //     fetch('https://slampost-8dd6d1d06367.herokuapp.com/slam/csrf-token')
+    //     fetch('http://localhost:8080/slam/csrf-token')
     //       .then(response => response.json())
     //       .then(data => {
     //         setState(prevState => {
@@ -105,7 +105,7 @@ export default function SingleFeedsPage() {
             setState(prevState => {
                 return { ...prevState, postLoading: true }
             });
-            const response = await fetch(`https://slampost-8dd6d1d06367.herokuapp.com/feeds/posts/${postId}`);
+            const response = await fetch(`http://localhost:8080/feeds/posts/${postId}`);
             const data = await response.json();
             if (!data && data.post.length < 1) {
                 throw new Error("Unable to fectch post details")

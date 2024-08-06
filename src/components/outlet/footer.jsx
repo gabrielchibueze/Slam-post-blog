@@ -17,13 +17,13 @@ const USER_FORM = {
         value: "",
         valid: false,
         touched: false,
-        validators: [required, length({ min: 3, max: 15 })]
+        validators: [required, length({ min: 3 })]
     },
     enquiry: {
         value: "",
         valid: false,
         touched: false,
-        validators: [required, length({ min: 10 })]
+        validators: [required, length({ min: 5 })]
     }
 }
 
@@ -45,7 +45,7 @@ export default function Footer() {
         setState(prevState => {
             return { ...prevState, loading: true }
         })
-        fetch("https://slampost-8dd6d1d06367.herokuapp.com/enquiry", {
+        fetch("http://localhost:8080/enquiry", {
             method: "put",
             body: JSON.stringify({
                 userId: state.user._id || null,
@@ -59,12 +59,12 @@ export default function Footer() {
             },
             // credentials: "include"
         }).then(res => {
+            console.log(res)
             if (!res.ok) {
                 const error = new Error("Error submitting your enquiry, Please try again");
                 error.title = "Error submitting enquiry"
                 throw error;
             }
-
             return res.json()
             // eslint-disable-next-line no-unused-vars
         }).then(resData => {
@@ -160,7 +160,7 @@ export default function Footer() {
                                 control: "textarea",
                                 required: "required",
                                 name: "enquiry",
-                                rows: 2,
+                                rows: 3,
                                 placeholder: "Enter your enquiry",
                                 value: currentState.userForm.enquiry.value,
                                 touched: currentState.userForm.enquiry.touched,

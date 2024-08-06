@@ -48,8 +48,9 @@ export default function InputComponent({ props }) {
                 {!props.valid && props.touched && props.id === "password" && <p className="input__error-message">Password not be less than 6 characters</p>}
                 {!props.valid && props.touched && props.id === "username" && <p className="input__error-message">Username must be above 2 characters.</p>}
                 {!props.valid && props.touched && props.id === "email" && <p className="input__error-message">This must be a valid email</p>}
+                {!props.valid && props.touched && props.id === "emailaddress" && <p className="input__error-message">This must be a valid email</p>}
                 {!props.valid && props.touched && props.id === "name" && <p className="input__error-message">Name must be above 3 characters</p>}
-                {!props.valid && props.touched && props.id === "enquiry" && <p className="input__error-message">Enquiry must be above 10 characters</p>}
+                {!props.valid && props.touched && props.id === "enquiry" && <p className="input__error-message">Enquiry must be above 5 characters</p>}
                 {!props.valid && props.touched && props.id === "content" && <p className="input__error-message">Content must be above 6 characters</p>}
             </div>
         }
