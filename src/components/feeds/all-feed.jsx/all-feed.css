@@ -13,6 +13,11 @@
     display: flex;
     flex-direction: column;
 }
+@media(max-width: 400px){
+    .main-outlet{
+        padding: 1rem;
+    }
+}
 .displayed-outlet {
     width: 100%;
     display: flex;

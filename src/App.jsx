@@ -71,7 +71,6 @@ function App() {
       const localStorageUsername = localStorage.getItem("slamUsername");
       const localStorageUserId = localStorage.getItem("slamUserId");
       const localStorageUserStatus = localStorage.getItem("slamUserStatus");
-      console.log(localStorageUserStatus)
       setState((prevState) => ({
         ...prevState,
         isAuthenticated: true,
