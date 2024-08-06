@@ -39,11 +39,11 @@ export default function SingleFeedsPage() {
         postId: null,
         likedPostHistory: []
     })
-    // useEffect(() => {
-    //     window.scrollTo({
-    //         top: 0
-    //     })
-    // })
+    useEffect(() => {
+        window.scrollTo({
+            top: 0
+        })
+    })
 
     // useEffect(() => {
     //     fetch('https://slampost-8dd6d1d06367.herokuapp.com/slam/csrf-token')
