@@ -34,7 +34,7 @@ export default function FeedContextProvider({ children }) {
         toDeletePostId: null,
         postPage: 1,
         postsLoading: true,
-        itemsPerPage: 5,
+        itemsPerPage: 15,
         statusCode: "",
         error: [],
         mobileView: false, desktopView: false, miniDesktop: false
