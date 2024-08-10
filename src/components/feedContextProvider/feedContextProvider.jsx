@@ -138,7 +138,7 @@ export default function FeedContextProvider({ children }) {
             if (!state.isAuthenticated) {
                 console.log(state.isAuthenticated)
                 const error = new Error("Sign in to update and view status")
-                error.title = "Unautorized access"
+                error.title = "Unauthorized access"
                 throw error
             }
             let url = "https://slampost-8dd6d1d06367.herokuapp.com/feeds/status"

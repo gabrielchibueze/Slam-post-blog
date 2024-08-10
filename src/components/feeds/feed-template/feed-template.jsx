@@ -185,7 +185,7 @@ export default function FeedTemplate({ props }) {
                                     <p className="dislike" onClick={() => clickOnLike(props.postId, "like")}><FaRegHeart /></p>
                                 }
                             </div>
-                            <p>{currentState.postLikes} Likes</p>
+                            <p>{currentState.postLikes} Like<span>{currentState.postLikes <= 1 ? "" : "s"}</span></p>
                         </div>
                         <MultiButtonComponent props={{
                             buttonProperties: [

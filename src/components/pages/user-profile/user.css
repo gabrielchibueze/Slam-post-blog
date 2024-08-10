@@ -7,7 +7,7 @@
 .user-profile__top-section {
     border-bottom: 1px solid grey;
     margin-bottom: 1.5rem;
-
+    padding-bottom: 0px;
 }
 
 .main-user__top-section{
@@ -38,12 +38,19 @@
 .user-activities > p > span {
     font-weight: bold;
 }
+.user-activities > p {
+    margin-bottom: 0px;
+}
 @media(max-width:700px){
     .user-activities {
         font-size: 0.9rem;
     }
 }
-
+@media(max-width: 450px){
+    .user-activities{
+        justify-content: space-between;
+    }
+}
 .user-personal__details {
     display: flex;
     flex-direction: column;

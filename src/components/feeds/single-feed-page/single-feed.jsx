@@ -23,6 +23,7 @@ export default function SingleFeedsPage() {
         cancelDeletetPost,
         catchError,
         state,
+        followUser,
         likePost,
         createdAt,
         setState
@@ -37,7 +38,8 @@ export default function SingleFeedsPage() {
         postLikes: null,
         isLiked: false,
         postId: null,
-        likedPostHistory: []
+        likedPostHistory: [],
+        followings: []
     })
     useEffect(() => {
         window.scrollTo({
@@ -73,9 +75,55 @@ export default function SingleFeedsPage() {
                 }
             })
         }
+
+        let usersFollowing = state.currentUser?.following
+        if (state.isAuthenticated) {
+            let checkIsFollowing = []
+            if (usersFollowing && usersFollowing.length > 0) {
+                for (let i = 0; i <= usersFollowing.length; i++) {
+                    checkIsFollowing.push(usersFollowing[i])
+                }
+            }
+            setCurrentState(prevState => {
+                return {
+                    ...prevState, followings: checkIsFollowing
+                }
+            })
+        }
     }, [state])
 
-
+    function handleFollowUser(followOrUnfollow, followedUserId) {
+        try {
+            if (!state.isAuthenticated) {
+                const error = new Error("Please sign in to follow user")
+                error.title = "Unauthorized access"
+                throw error
+            }
+            followUser(followOrUnfollow, followedUserId)
+            if (followOrUnfollow === "follow") {
+                setCurrentState(prevState => {
+                    return {
+                        ...prevState,
+                        isFollowing: true,
+                    }
+                })
+                setState(prevState => {
+                    return { ...prevState, follow: prevState.follow + 1 }
+                })
+            }
+            if (followOrUnfollow === "unfollow") {
+                setCurrentState(prevState => {
+                    return { ...prevState, isFollowing: false }
+                })
+                currentState.followings.pop(followedUserId)
+                setState(prevState => {
+                    return { ...prevState, follow: prevState.follow - 1 }
+                })
+            }
+        } catch (err) {
+            catchError(err)
+        }
+    }
     function clickOnLike(postId, likeOrDislike) {
         try {
             if (!state.isAuthenticated) {
@@ -220,6 +268,15 @@ export default function SingleFeedsPage() {
                                 </div>
                                 <p>{currentState.postLikes} Likes</p>
                             </div>
+                            {postDetail.creator._id !== state.user?._id && <div>
+                                {
+                                    currentState.followings?.length && currentState.followings.find(user => user === postDetail.creator._id) || currentState.isFollowing ?
+                                        <p className="follow__unfollow" onClick={() => handleFollowUser("unfollow", postDetail.creator._id)}>Unfollow</p> :
+                                        <p className="follow__unfollow" onClick={() => handleFollowUser("follow", postDetail.creator._id)}>Follow +</p>
+                                }
+                            </div>
+                            }
+
                             {
                                 state.isAuthenticated && state.user?._id.toString() === postDetail.creator._id.toString() &&
 
