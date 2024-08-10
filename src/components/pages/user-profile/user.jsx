@@ -219,10 +219,10 @@ export default function User() {
                             }
                         </div>
                         <div className="user-activities">
-                            <p><span>{currentState.user?.followers?.length || 0} </span>Follower<span>{currentState.user?.followers?.length <= 1 ? "" : "s"}</span></p>
-                            <p><span>{currentState.user?.following?.length || 0} </span>Following<span>{currentState.user?.following.length <= 1? "" : "s"}</span></p>
-                            <p><span>{currentState.user?.posts.length || 0} </span>Slam<span>{currentState.user?.posts.length <=1 ? "" : "s"}</span></p>
-                            <p><span>{currentState.user?.likes.length || 0} </span>Like<span>{currentState.user?.likes.length <= 1 ? "" : "s"}</span></p>
+                            <p><span>{currentState.user?.followers?.length || 0} </span>Follower{currentState.user?.followers?.length <= 1 ? "" : "s"}</p>
+                            <p><span>{currentState.user?.following?.length || 0} </span>Following{currentState.user?.following.length <= 1? "" : "s"}</p>
+                            <p><span>{currentState.user?.posts.length || 0} </span>Slam{currentState.user?.posts.length <=1 ? "" : "s"}</p>
+                            <p><span>{currentState.user?.likes.length || 0} </span>Like{currentState.user?.likes.length <= 1 ? "" : "s"}</p>
                         </div>
                     </div>
                     <div className="sub-links__user-profile">
